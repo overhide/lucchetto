@@ -1,0 +1,28 @@
+{
+  "name": "lucchetto",
+  "version": "1.0.0",
+  "description": "Client side JavaScript helper utilities for working with remotestorage/armadietto servers' token metadata -- servers extended with the pay2my.app extension and others.",
+  "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/overhide/lucchetto.git"
+  },
+  "keywords": [
+    "remotestorage",
+    "armadietto"
+  ],
+  "author": "",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/overhide/lucchetto/issues"
+  },
+  "homepage": "https://github.com/overhide/lucchetto#readme",
+  "dependencies": {
+    "webpack": "^5.69.1",
+    "webpack-cli": "^4.9.2"
+  },
+  "scripts": {
+    "builddev": "webpack --mode=development",
+    "build": "webpack --mode=production"
+  }
+}

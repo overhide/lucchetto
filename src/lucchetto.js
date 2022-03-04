@@ -1,6 +1,21 @@
 const METADATA_REGEX = /,metadata=([^,]*)/;
 
 /**
+ * List of lucchetto providing servers for production:  these are shown as options in a dropdown, when this is constructed with `!isTest`:
+ */
+const LUCCHETTO_PROVIDERS = [
+  '@rs.overhide.io'
+]
+
+/**
+ * List of lucchetto providing servers for testnets:  these are shown as options in a dropdown, when this is constructed with `isTest`:
+ */
+ const LUCCHETTO_PROVIDERS_4_TEST = [
+  '@test.rs.overhide.io',
+  '@localhost:8000'
+]
+
+/**
  * Helper class; reacts to remotestorage.js `onConnected` events to parse metadata out of newly available token.
  */
 class Lucchetto {
@@ -8,11 +23,12 @@ class Lucchetto {
   /**
    * @param {*} remoteStorage - the RS instance available from client.
    */
-  constructor(remoteStorage) {
+  constructor(remoteStorage, isTest = false) {
     this.remoteStorage = remoteStorage;
     this.metadata = {};
     this.previousToken = null;
     this.currentUserAddress = null;
+    this.isTest = isTest;
 
     document.addEventListener('DOMContentLoaded', this.onDomLoad);
   }
@@ -21,6 +37,7 @@ class Lucchetto {
    * Regular DOM "loaded" event handler.
    */
   onDomLoad = () => {
+    this.extendWidget();
     this.remoteStorage.on('connected', this.onConnected);
   }
 
@@ -62,6 +79,37 @@ class Lucchetto {
         this.remoteStorage.connect(this.currentUserAddress, this.remoteStorage.remote.token);
       }
     }
+
+    extendWidget = () => {
+      this.attempt = 0;
+      this._extendWidget();
+    }
+
+    _extendWidget = () => {
+      const el = document.querySelector(`input[name='rs-user-address']`);
+      const providers = this.isTest ? LUCCHETTO_PROVIDERS_4_TEST : LUCCHETTO_PROVIDERS;
+
+      this.attempt++;
+      if (this.attempt > 20) return;
+
+      if (el) {
+        try {
+          el.setAttribute('placeholder',providers[0]);
+          el.setAttribute('list', 'rs-user-address-list');
+          const dl = document.createElement('datalist');
+          dl.setAttribute('id', 'rs-user-address-list');
+          for(const item of providers){
+            const itemEl = document.createElement('option');
+            itemEl.setAttribute('value', item);
+            dl.appendChild(itemEl);
+          }
+          el.after(dl); 
+        } catch {}
+        return;
+      }
+
+      setTimeout(this.extendWidget, 250);
+    }    
 
   /**
    * Get all metadata from the token

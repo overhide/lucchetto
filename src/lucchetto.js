@@ -129,6 +129,40 @@ class Lucchetto {
   getUserAddress = () => {
     return this.currentUserAddress ? this.currentUserAddress : this.remoteStorage.remote.userAddress;
   }
+
+  /**
+   * @returns {string} the lucchetto namespace: under which lucchetto in-app purchase SKU data is stored.
+   */
+  getNamespace = () => `pay2my.app`;
+
+  /**
+   * Retrieve a remotestorage path to in-app purchase SKUs.
+   * 
+   * @param {*} sku - tag must be a a string comprised of 2 to 20 numbers, lower case letters, hypens, and periods
+   * @param {*} price - must be in US dollars, optionally with a period and cents
+   * @param {*} within - must be a whole number
+   * @throws {string} if parameters not parsable
+   * @returns {string}
+   */
+  getPath = (sku, price, within) => {
+    if (!price || !price.match(/^\d{0,7}(\.\d{2})?$/)) {
+      throw '"price" must be in dollars, optionally with a period and cents, e.g. `2.00`';
+    }
+    if (!within || !within.match(/^\d{1,8}$/)) {
+      throw '"within" must be a whole number, e.g. `525600`';
+    }
+    if (!sku || !sku.match(/^[0-9a-z.-]{2,20}$/)) {
+      throw '"SKU" must be a a string comprised of 2 to 20 numbers, lower case letters, hypens, and periods, e.g. `item`';
+    }
+
+    price = (+price).toFixed(2);
+
+    if (price < .5) {
+      throw '"price" must be > "0.50"';
+    }
+
+    return `/${sku}/${price}/${within}`;
+  }
 }
 
 var root = typeof self == 'object' && self.self === self && self ||

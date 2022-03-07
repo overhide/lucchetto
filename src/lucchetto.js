@@ -21,14 +21,17 @@ const LUCCHETTO_PROVIDERS = [
 class Lucchetto {
   
   /**
-   * @param {*} remoteStorage - the RS instance available from client.
+   * @param {*} remoteStorage - the RS instance available from client.  This is an RS instance connected to the the client-user's data.
+   * @param {bool} isTest - flag whether this is all working against testnets or mainnets/prod servers.
+   * @param {*} hub - pay2my.app hub to instrument with credentials coming out of the remoteStorage instance (iff armadietto+luccheto).
    */
-  constructor(remoteStorage, isTest = false) {
+  constructor(remoteStorage, isTest = false, hub = null) {
     this.remoteStorage = remoteStorage;
     this.metadata = {};
     this.previousToken = null;
     this.currentUserAddress = null;
     this.isTest = isTest;
+    this.hub = hub;
 
     document.addEventListener('DOMContentLoaded', this.onDomLoad);
   }
@@ -38,6 +41,7 @@ class Lucchetto {
    */
   onDomLoad = () => {
     this.extendWidget();
+    this.initHub();
     this.remoteStorage.on('connected', this.onConnected);
   }
 
@@ -50,6 +54,7 @@ class Lucchetto {
     if (!token) return;
     this.metadata = this._getMetadata(token);
     this.rewriteUsername();
+    this.instrumentHub();
   }
 
   _getMetadata = (token) => {
@@ -77,6 +82,30 @@ class Lucchetto {
         this.previousToken = this.remoteStorage.remote.token;
         this.currentUserAddress = `${this.metadata.p2ma_address}@${host}`;;
         this.remoteStorage.connect(this.currentUserAddress, this.remoteStorage.remote.token);
+      }
+    }
+
+    initHub = () => {
+      if (!this.hub) {
+        console.warn(`no pay2my.app hub configured for lucchetto therefore no IAPs`);
+        return;
+      }
+      if (this.isTest) {
+        this.hub.setAttribute('apiKey', `0x9a6aef977a293b5c49ac5fcdd6376010e027549b8aa0ff97bc65a1d8649aef62`);
+      } else {
+        this.hub.setAttribute('apiKey', `0xc16f6e6d8666fdd835d909422fc141dfe5efcbcca3125bf746ef63019c486e47`);
+      }      
+    }
+
+    instrumentHub = () => {
+      if (this.hub && 'p2ma_address' in this.metadata && this.previousToken !== this.remoteStorage.remote.token) {
+        console.log(`lucchetto: instrumenting hub`);
+        this.hub.setCurrentImparterChecked(
+          this.metadata.p2ma_imparter,
+          this.metadata.p2ma_token,
+          this.metadata.p2ma_signature,
+          this.metadata.p2ma_address
+        );
       }
     }
 
@@ -162,6 +191,39 @@ class Lucchetto {
     }
 
     return `/${sku}/${price}/${within}`;
+  }
+
+  /**
+   * Retrieve data for a SKU.
+   * 
+   * Leverages metadata from the user's armadietto+lucchetto remotestorage connection this instance was constructed with.  
+   * 
+   * @param {string} url - the URL to your, the developer's, armadietto+lucchetto that contains your IAP definitions.
+   * @param {*} detail - the `detail` object from the `pay2myapp-appsell-sku-clicked` event, see https://www.npmjs.com/package/pay2my.app
+   * @throws {*} if error
+   * @returns {string} the data payload for the SKU
+   */
+  getSku = async (url, detail) => {
+
+    // Call back-end and ensure it verifies before saying it's handled.
+    const response = await fetch(`${url}/pay2myapp`
+    +`?sku=${detail.sku}`
+    +`&priceDollars=${(+detail.priceDollars).toFixed(2)}`
+    +`&withinMinutes=${detail.withinMinutes}`
+    +`&currency=${detail.currency}`
+    +`&from=${detail.from}`
+    +`&to=${detail.to}`
+    +`&isTest=${detail.isTest}`
+    +`&asOf=${detail.asOf}`
+    +`&message=${btoa(detail.message)}`
+    +`&signature=${btoa(detail.signature)}`);
+
+    if (response.ok) {
+      const result = await response.json()
+      return result.data;
+    } else {
+      throw `error talking to back-end &mdash; ${response.status} &mdash; ${response.statusText}`;
+    }
   }
 }
 

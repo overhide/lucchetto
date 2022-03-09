@@ -32,6 +32,7 @@ class Lucchetto {
     this.currentUserAddress = null;
     this.isTest = isTest;
     this.hub = hub;
+    this.lastImparterToken = null;
 
     document.addEventListener('DOMContentLoaded', this.onDomLoad);
   }
@@ -98,7 +99,8 @@ class Lucchetto {
     }
 
     instrumentHub = () => {
-      if (this.hub && 'p2ma_address' in this.metadata && this.previousToken !== this.remoteStorage.remote.token) {
+      const currentImparterToken = JSON.stringify(this.metadata);;
+      if (this.hub && 'p2ma_address' in this.metadata && this.lastImparterToken !== currentImparterToken) {
         console.log(`lucchetto: instrumenting hub`);
         this.hub.setCurrentImparterChecked(
           this.metadata.p2ma_imparter,
@@ -106,6 +108,7 @@ class Lucchetto {
           this.metadata.p2ma_signature,
           this.metadata.p2ma_address
         );
+        this.lastImparterToken = currentImparterToken;
       }
     }
 
@@ -156,7 +159,7 @@ class Lucchetto {
    * @returns {string} the user address last seen upon last connection
    */
   getUserAddress = () => {
-    return this.currentUserAddress ? this.currentUserAddress : this.remoteStorage.remote.userAddress;
+    return this.currentUserAddress && this.currentUserAddress === this.remoteStorage.remote.userAddress ? this.currentUserAddress : null;
   }
 
   /**

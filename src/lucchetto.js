@@ -34,6 +34,8 @@ class Lucchetto {
     this.hub = hub;
     this.lastImparterToken = null;
 
+    this.reinitConnectionPromise();
+    this.reinitLucchettoPromise();
     document.addEventListener('DOMContentLoaded', this.onDomLoad);
   }
 
@@ -44,6 +46,8 @@ class Lucchetto {
     this.extendWidget();
     this.initHub();
     this.remoteStorage.on('connected', this.onConnected);
+    this.remoteStorage.on('not-connected', this.onNotConnected);
+    this.remoteStorage.on('error', this.onError);
   }
 
   /**
@@ -56,6 +60,31 @@ class Lucchetto {
     this.metadata = this._getMetadata(token);
     this.rewriteUsername();
     this.instrumentHub();
+    this.resolveConnection();
+    if (this.previousToken) {
+      this.resolveLucchetto();
+    }
+  }
+
+  /**
+   * remotestorage.js `onNotConnected` event handler.
+   */
+   onNotConnected = () => {
+    this.metadata = {};
+    this.reinitConnectionPromise();
+    this.reinitLucchettoPromise();
+    this.logout();
+  }
+
+  /**
+   * remotestorage.js `onError` event handler.
+   */
+   onError = (event) => {
+    console.warn(`lucchetto :: onError ${event}`);
+    this.metadata = {};
+    this.reinitConnectionPromise();
+    this.reinitLucchettoPromise();
+    this.logout();
   }
 
   _getMetadata = (token) => {
@@ -76,72 +105,114 @@ class Lucchetto {
     const oldName = this.remoteStorage.remote.userAddress.split('@')[0];
     const host = this.remoteStorage.remote.userAddress.split('@')[1];
 
-    if ('p2ma_address' in this.metadata
-        && oldName !== this.metadata.p2ma_address
-        && this.previousToken !== this.remoteStorage.remote.token) {
-        console.log(`lucchetto: rewriting username ${oldName} => ${this.metadata.p2ma_address}`);
-        this.previousToken = this.remoteStorage.remote.token;
-        this.currentUserAddress = `${this.metadata.p2ma_address}@${host}`;;
-        this.remoteStorage.connect(this.currentUserAddress, this.remoteStorage.remote.token);
+    if ('p2ma_address' in this.metadata) {
+      this.currentUserAddress = `${this.metadata.p2ma_address}@${host}`;
+      if (oldName !== this.metadata.p2ma_address
+          && this.previousToken !== this.remoteStorage.remote.token) {
+          console.log(`lucchetto :: rewriting username ${oldName} => ${this.metadata.p2ma_address}`);
+          this.remoteStorage.connect(this.currentUserAddress, this.remoteStorage.remote.token);
       }
+      this.previousToken = this.remoteStorage.remote.token;
+    }
+  }
+
+  initHub = () => {
+    if (!this.hub) {
+      console.warn(`lucchetto :: no pay2my.app hub configured for lucchetto therefore no IAPs`);
+      return;
+    }
+    if (this.isTest) {
+      this.hub.setAttribute('apiKey', `0x9a6aef977a293b5c49ac5fcdd6376010e027549b8aa0ff97bc65a1d8649aef62`);
+    } else {
+      this.hub.setAttribute('apiKey', `0xc16f6e6d8666fdd835d909422fc141dfe5efcbcca3125bf746ef63019c486e47`);
+    }      
+  }
+
+  instrumentHub = () => {
+    const currentImparterToken = JSON.stringify(this.metadata);;
+    if (this.hub && 'p2ma_address' in this.metadata && this.lastImparterToken !== currentImparterToken) {
+      console.log(`lucchetto :: instrumenting hub`);
+      this.hub.setCurrentImparterChecked(
+        this.metadata.p2ma_imparter,
+        this.metadata.p2ma_token,
+        this.metadata.p2ma_signature,
+        this.metadata.p2ma_address
+      );
+      this.lastImparterToken = currentImparterToken;
+    }
+  }
+
+  logout = () => {
+    if (this.hub && this.lastImparterToken) {
+      console.log(`lucchetto :: logging out`);
+      this.hub.setCurrentImparterChecked(
+        'unknown',
+        null,
+        null,
+        null
+      );
+      this.lastImparterToken = null;
+    }
+  }
+
+  extendWidget = () => {
+    this.attempt = 0;
+    this._extendWidget();
+  }
+
+  _extendWidget = () => {
+    const el = document.querySelector(`input[name='rs-user-address']`);
+    const providers = this.isTest ? LUCCHETTO_PROVIDERS_4_TEST : LUCCHETTO_PROVIDERS;
+
+    this.attempt++;
+    if (this.attempt > 20) return;
+
+    if (el) {
+      try {
+        el.setAttribute('placeholder',providers[0]);
+        el.setAttribute('list', 'rs-user-address-list');
+        const dl = document.createElement('datalist');
+        dl.setAttribute('id', 'rs-user-address-list');
+        for(const item of providers){
+          const itemEl = document.createElement('option');
+          itemEl.setAttribute('value', item);
+          dl.appendChild(itemEl);
+        }
+        el.after(dl); 
+      } catch {}
+      return;
     }
 
-    initHub = () => {
-      if (!this.hub) {
-        console.warn(`no pay2my.app hub configured for lucchetto therefore no IAPs`);
-        return;
-      }
-      if (this.isTest) {
-        this.hub.setAttribute('apiKey', `0x9a6aef977a293b5c49ac5fcdd6376010e027549b8aa0ff97bc65a1d8649aef62`);
-      } else {
-        this.hub.setAttribute('apiKey', `0xc16f6e6d8666fdd835d909422fc141dfe5efcbcca3125bf746ef63019c486e47`);
-      }      
-    }
+    setTimeout(this.extendWidget, 250);
+  }    
 
-    instrumentHub = () => {
-      const currentImparterToken = JSON.stringify(this.metadata);;
-      if (this.hub && 'p2ma_address' in this.metadata && this.lastImparterToken !== currentImparterToken) {
-        console.log(`lucchetto: instrumenting hub`);
-        this.hub.setCurrentImparterChecked(
-          this.metadata.p2ma_imparter,
-          this.metadata.p2ma_token,
-          this.metadata.p2ma_signature,
-          this.metadata.p2ma_address
-        );
-        this.lastImparterToken = currentImparterToken;
-      }
-    }
+  reinitLucchettoPromise = () => {
+    if (this.rejectLucchetto) this.rejectLucchetto('lucchetto not available');
+    this.lucchettoPromise = new Promise((rs, rj) => {this.resolveLucchetto = rs; this.rejectLucchetto = rj;});
+  }
 
-    extendWidget = () => {
-      this.attempt = 0;
-      this._extendWidget();
-    }
+  reinitConnectionPromise = () => {
+    if (this.rejectConnection) this.rejectConnection('not connected');
+    this.connectionPromise = new Promise((rs, rj) => {this.resolveConnection = rs; this.rejectConnection = rj;});
+  }
 
-    _extendWidget = () => {
-      const el = document.querySelector(`input[name='rs-user-address']`);
-      const providers = this.isTest ? LUCCHETTO_PROVIDERS_4_TEST : LUCCHETTO_PROVIDERS;
+  /**
+   * Helper method to wait until user is fully connected to any remotestorage server, lucchetto enabled or not.
+   * 
+   * @returns {Promise} to be resolved when RS is connected.
+   */
+  waitRSConnected = (key) => {
+    return this.connectionPromise;
+  }
 
-      this.attempt++;
-      if (this.attempt > 20) return;
-
-      if (el) {
-        try {
-          el.setAttribute('placeholder',providers[0]);
-          el.setAttribute('list', 'rs-user-address-list');
-          const dl = document.createElement('datalist');
-          dl.setAttribute('id', 'rs-user-address-list');
-          for(const item of providers){
-            const itemEl = document.createElement('option');
-            itemEl.setAttribute('value', item);
-            dl.appendChild(itemEl);
-          }
-          el.after(dl); 
-        } catch {}
-        return;
-      }
-
-      setTimeout(this.extendWidget, 250);
-    }    
+  /**
+   * Helper method to wait until user is fully connected to a lucchetto enabled remotestorage server..
+   * 
+   * @returns {Promise} to be resolved when RS is connected.
+   */
+   waitRSIsLucchetto = (key) => {
+    return this.lucchettoPromise;
+  }
 
   /**
    * Get all metadata from the token
@@ -208,24 +279,36 @@ class Lucchetto {
    */
   getSku = async (url, detail) => {
 
-    // Call back-end and ensure it verifies before saying it's handled.
-    const response = await fetch(`${url}/pay2myapp`
-    +`?sku=${detail.sku}`
-    +`&priceDollars=${(+detail.priceDollars).toFixed(2)}`
-    +`&withinMinutes=${detail.withinMinutes}`
-    +`&currency=${detail.currency}`
-    +`&from=${detail.from}`
-    +`&to=${detail.to}`
-    +`&isTest=${detail.isTest}`
-    +`&asOf=${detail.asOf}`
-    +`&message=${btoa(detail.message)}`
-    +`&signature=${btoa(detail.signature)}`);
+    try {
+      // Call back-end and ensure it verifies before saying it's handled.
+      const response = await fetch(`${url}/pay2myapp`
+      +`?sku=${detail.sku}`
+      +`&priceDollars=${(+detail.priceDollars).toFixed(2)}`
+      +`&withinMinutes=${detail.withinMinutes}`
+      +`&currency=${detail.currency}`
+      +`&from=${detail.from}`
+      +`&to=${detail.to}`
+      +`&isTest=${detail.isTest}`
+      +`&asOf=${detail.asOf}`
+      +`&message=${btoa(detail.message)}`
+      +`&signature=${btoa(detail.signature)}`);
 
-    if (response.ok) {
-      const result = await response.json()
-      return result.data;
-    } else {
-      throw `error talking to back-end &mdash; ${response.status} &mdash; ${response.statusText}`;
+      if (response.ok) {
+        const type = response.headers.get("Content-Type");
+        if (type && type.includes('text')) {
+          return await response.text();
+        } else if (type && type.includes('json')) {
+          return await response.json();
+        }
+        return await response.blob();
+      } else {
+        throw `error talking to back-end &mdash; ${response.status} &mdash; ${response.statusText}`;
+      }
+    } catch (e) {
+      if (this.hub) {
+        this.hub.refresh();
+      }
+      throw e;
     }
   }
 }

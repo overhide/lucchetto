@@ -1,6 +1,6 @@
 {
   "name": "lucchetto",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "Client side JavaScript helper utilities for working with remotestorage/armadietto servers' token metadata -- servers extended with the pay2my.app extension and others.",
   "main": "index.js",
   "repository": {

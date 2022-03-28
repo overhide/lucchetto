@@ -1,0 +1,1056 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset='utf-8'>
+  <title>lucchetto.js :: documentation $npm_package_version | Documentation</title>
+  <meta name='description' content='Client side JavaScript helper utilities for working with remotestorage/armadietto servers&#39; token metadata -- servers extended with the pay2my.app extension and others.'>
+  <meta name='viewport' content='width=device-width,initial-scale=1'>
+  <link href='assets/bass.css' rel='stylesheet'>
+  <link href='assets/style.css' rel='stylesheet'>
+  <link href='assets/github.css' rel='stylesheet'>
+  <link href='assets/split.css' rel='stylesheet'>
+</head>
+<body class='documentation m0'>
+    <div class='flex'>
+      <div id='split-left' class='overflow-auto fs0 height-viewport-100'>
+        <div class='py1 px2'>
+          <h3 class='mb0 no-anchor'>lucchetto.js :: documentation</h3>
+          <div class='mb1'><code>$npm_package_version</code></div>
+          <input
+            placeholder='Filter'
+            id='filter-input'
+            class='col12 block input'
+            spellcheck='false'
+            autocapitalize='off'
+            autocorrect='off'
+            type='text' />
+          <div id='toc'>
+            <ul class='list-reset h5 py1-ul'>
+              
+                
+                <li><a
+                  href='#lucchetto_providers'
+                  class="">
+                  LUCCHETTO_PROVIDERS
+                  
+                </a>
+                
+                </li>
+              
+                
+                <li><a
+                  href='#lucchetto_providers_4_test'
+                  class="">
+                  LUCCHETTO_PROVIDERS_4_TEST
+                  
+                </a>
+                
+                </li>
+              
+                
+                <li><a
+                  href='#lucchetto'
+                  class=" toggle-sibling">
+                  Lucchetto
+                  <span class='icon'>▸</span>
+                </a>
+                
+                <div class='toggle-target display-none'>
+                  
+                  
+                    <ul class='list-reset py1-ul pl1'>
+                      <li class='h5'><span>Instance members</span></li>
+                      
+                      <li><a
+                        href='#lucchettoondomload'
+                        class='regular pre-open'>
+                        #onDomLoad
+                      </a></li>
+                      
+                      <li><a
+                        href='#lucchettoonconnected'
+                        class='regular pre-open'>
+                        #onConnected
+                      </a></li>
+                      
+                      <li><a
+                        href='#lucchettoonnotconnected'
+                        class='regular pre-open'>
+                        #onNotConnected
+                      </a></li>
+                      
+                      <li><a
+                        href='#lucchettoonerror'
+                        class='regular pre-open'>
+                        #onError
+                      </a></li>
+                      
+                      <li><a
+                        href='#lucchettowaitrsconnected'
+                        class='regular pre-open'>
+                        #waitRSConnected
+                      </a></li>
+                      
+                      <li><a
+                        href='#lucchettowaitrsislucchetto'
+                        class='regular pre-open'>
+                        #waitRSIsLucchetto
+                      </a></li>
+                      
+                      <li><a
+                        href='#lucchettogetmetadata'
+                        class='regular pre-open'>
+                        #getMetadata
+                      </a></li>
+                      
+                      <li><a
+                        href='#lucchettogetuseraddress'
+                        class='regular pre-open'>
+                        #getUserAddress
+                      </a></li>
+                      
+                      <li><a
+                        href='#lucchettogetnamespace'
+                        class='regular pre-open'>
+                        #getNamespace
+                      </a></li>
+                      
+                      <li><a
+                        href='#lucchettogetpath'
+                        class='regular pre-open'>
+                        #getPath
+                      </a></li>
+                      
+                      <li><a
+                        href='#lucchettogetsku'
+                        class='regular pre-open'>
+                        #getSku
+                      </a></li>
+                      
+                    </ul>
+                  
+                  
+                  
+                </div>
+                
+                </li>
+              
+            </ul>
+          </div>
+          <div class='mt1 h6 quiet'>
+            <a href='https://documentation.js.org/reading-documentation.html'>Need help reading this?</a>
+          </div>
+        </div>
+      </div>
+      <div id='split-right' class='relative overflow-auto height-viewport-100'>
+        
+          
+          <section class='p2 mb2 clearfix bg-white minishadow'>
+
+  
+  <div class='clearfix'>
+    
+    <h3 class='fl m0' id='lucchetto_providers'>
+      LUCCHETTO_PROVIDERS
+    </h3>
+    
+    
+  </div>
+  
+
+  <p>List of lucchetto providing servers for production:  these are shown as options in a dropdown, when this is constructed with <code>!isTest</code>:</p>
+
+    <div class='pre p1 fill-light mt0'>LUCCHETTO_PROVIDERS</div>
+  
+  
+
+  
+  
+  
+  
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+</section>
+
+          
+        
+          
+          <section class='p2 mb2 clearfix bg-white minishadow'>
+
+  
+  <div class='clearfix'>
+    
+    <h3 class='fl m0' id='lucchetto_providers_4_test'>
+      LUCCHETTO_PROVIDERS_4_TEST
+    </h3>
+    
+    
+  </div>
+  
+
+  <p>List of lucchetto providing servers for testnets:  these are shown as options in a dropdown, when this is constructed with <code>isTest</code>:</p>
+
+    <div class='pre p1 fill-light mt0'>LUCCHETTO_PROVIDERS_4_TEST</div>
+  
+  
+
+  
+  
+  
+  
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+</section>
+
+          
+        
+          
+          <section class='p2 mb2 clearfix bg-white minishadow'>
+
+  
+  <div class='clearfix'>
+    
+    <h3 class='fl m0' id='lucchetto'>
+      Lucchetto
+    </h3>
+    
+    
+  </div>
+  
+
+  <p>Helper class; reacts to remotestorage.js <code>onConnected</code> events to parse metadata out of newly available token.</p>
+
+    <div class='pre p1 fill-light mt0'>new Lucchetto(remoteStorage: any, isTest: bool, hub: any)</div>
+  
+  
+
+  
+  
+  
+  
+  
+  
+
+  
+    <div class='py1 quiet mt1 prose-big'>Parameters</div>
+    <div class='prose'>
+      
+        <div class='space-bottom0'>
+          <div>
+            <span class='code bold'>remoteStorage</span> <code class='quiet'>(any)</code>
+	    the RS instance available from client.  This is an RS instance connected to the the client-user's data.
+
+          </div>
+          
+        </div>
+      
+        <div class='space-bottom0'>
+          <div>
+            <span class='code bold'>isTest</span> <code class='quiet'>(bool
+            = <code>false</code>)</code>
+	    flag whether this is all working against testnets or mainnets/prod servers.
+
+          </div>
+          
+        </div>
+      
+        <div class='space-bottom0'>
+          <div>
+            <span class='code bold'>hub</span> <code class='quiet'>(any
+            = <code>null</code>)</code>
+	    pay2my.app hub to instrument with credentials coming out of the remoteStorage instance (iff armadietto+luccheto).
+
+          </div>
+          
+        </div>
+      
+    </div>
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    <div class='py1 quiet mt1 prose-big'>Instance Members</div>
+    <div class="clearfix">
+  
+    <div class='border-bottom' id='lucchettoondomload'>
+      <div class="clearfix small pointer toggle-sibling">
+        <div class="py1 contain">
+            <a class='icon pin-right py1 dark-link caret-right'>▸</a>
+            <span class='code strong strong truncate'>onDomLoad</span>
+        </div>
+      </div>
+      <div class="clearfix display-none toggle-target">
+        <section class='p2 mb2 clearfix bg-white minishadow'>
+
+  
+
+  <p>Regular DOM "loaded" event handler.</p>
+
+    <div class='pre p1 fill-light mt0'>onDomLoad</div>
+  
+  
+
+  
+  
+  
+  
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+</section>
+
+      </div>
+    </div>
+  
+    <div class='border-bottom' id='lucchettoonconnected'>
+      <div class="clearfix small pointer toggle-sibling">
+        <div class="py1 contain">
+            <a class='icon pin-right py1 dark-link caret-right'>▸</a>
+            <span class='code strong strong truncate'>onConnected</span>
+        </div>
+      </div>
+      <div class="clearfix display-none toggle-target">
+        <section class='p2 mb2 clearfix bg-white minishadow'>
+
+  
+
+  <p>remotestorage.js <code>onConnected</code> event handler.</p>
+
+    <div class='pre p1 fill-light mt0'>onConnected</div>
+  
+  
+
+  
+  
+  
+  
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+</section>
+
+      </div>
+    </div>
+  
+    <div class='border-bottom' id='lucchettoonnotconnected'>
+      <div class="clearfix small pointer toggle-sibling">
+        <div class="py1 contain">
+            <a class='icon pin-right py1 dark-link caret-right'>▸</a>
+            <span class='code strong strong truncate'>onNotConnected</span>
+        </div>
+      </div>
+      <div class="clearfix display-none toggle-target">
+        <section class='p2 mb2 clearfix bg-white minishadow'>
+
+  
+
+  <p>remotestorage.js <code>onNotConnected</code> event handler.</p>
+
+    <div class='pre p1 fill-light mt0'>onNotConnected</div>
+  
+  
+
+  
+  
+  
+  
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+</section>
+
+      </div>
+    </div>
+  
+    <div class='border-bottom' id='lucchettoonerror'>
+      <div class="clearfix small pointer toggle-sibling">
+        <div class="py1 contain">
+            <a class='icon pin-right py1 dark-link caret-right'>▸</a>
+            <span class='code strong strong truncate'>onError</span>
+        </div>
+      </div>
+      <div class="clearfix display-none toggle-target">
+        <section class='p2 mb2 clearfix bg-white minishadow'>
+
+  
+
+  <p>remotestorage.js <code>onError</code> event handler.</p>
+
+    <div class='pre p1 fill-light mt0'>onError</div>
+  
+  
+
+  
+  
+  
+  
+  
+  
+
+  
+    <div class='py1 quiet mt1 prose-big'>Parameters</div>
+    <div class='prose'>
+      
+        <div class='space-bottom0'>
+          <div>
+            <span class='code bold'>event</span> <code class='quiet'>(any)</code>
+	    
+          </div>
+          
+        </div>
+      
+    </div>
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+</section>
+
+      </div>
+    </div>
+  
+    <div class='border-bottom' id='lucchettowaitrsconnected'>
+      <div class="clearfix small pointer toggle-sibling">
+        <div class="py1 contain">
+            <a class='icon pin-right py1 dark-link caret-right'>▸</a>
+            <span class='code strong strong truncate'>waitRSConnected</span>
+        </div>
+      </div>
+      <div class="clearfix display-none toggle-target">
+        <section class='p2 mb2 clearfix bg-white minishadow'>
+
+  
+
+  <p>Helper method to wait until user is fully connected to any remotestorage server, lucchetto enabled or not.</p>
+
+    <div class='pre p1 fill-light mt0'>waitRSConnected</div>
+  
+  
+
+  
+  
+  
+  
+  
+  
+
+  
+    <div class='py1 quiet mt1 prose-big'>Parameters</div>
+    <div class='prose'>
+      
+        <div class='space-bottom0'>
+          <div>
+            <span class='code bold'>key</span> <code class='quiet'>(any)</code>
+	    
+          </div>
+          
+        </div>
+      
+    </div>
+  
+
+  
+
+  
+    
+      <div class='py1 quiet mt1 prose-big'>Returns</div>
+      <code><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a></code>:
+        to be resolved when RS is connected.
+
+      
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+</section>
+
+      </div>
+    </div>
+  
+    <div class='border-bottom' id='lucchettowaitrsislucchetto'>
+      <div class="clearfix small pointer toggle-sibling">
+        <div class="py1 contain">
+            <a class='icon pin-right py1 dark-link caret-right'>▸</a>
+            <span class='code strong strong truncate'>waitRSIsLucchetto</span>
+        </div>
+      </div>
+      <div class="clearfix display-none toggle-target">
+        <section class='p2 mb2 clearfix bg-white minishadow'>
+
+  
+
+  <p>Helper method to wait until user is fully connected to a lucchetto enabled remotestorage server..</p>
+
+    <div class='pre p1 fill-light mt0'>waitRSIsLucchetto</div>
+  
+  
+
+  
+  
+  
+  
+  
+  
+
+  
+    <div class='py1 quiet mt1 prose-big'>Parameters</div>
+    <div class='prose'>
+      
+        <div class='space-bottom0'>
+          <div>
+            <span class='code bold'>key</span> <code class='quiet'>(any)</code>
+	    
+          </div>
+          
+        </div>
+      
+    </div>
+  
+
+  
+
+  
+    
+      <div class='py1 quiet mt1 prose-big'>Returns</div>
+      <code><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a></code>:
+        to be resolved when RS is connected.
+
+      
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+</section>
+
+      </div>
+    </div>
+  
+    <div class='border-bottom' id='lucchettogetmetadata'>
+      <div class="clearfix small pointer toggle-sibling">
+        <div class="py1 contain">
+            <a class='icon pin-right py1 dark-link caret-right'>▸</a>
+            <span class='code strong strong truncate'>getMetadata</span>
+        </div>
+      </div>
+      <div class="clearfix display-none toggle-target">
+        <section class='p2 mb2 clearfix bg-white minishadow'>
+
+  
+
+  <p>Get all metadata from the token</p>
+
+    <div class='pre p1 fill-light mt0'>getMetadata</div>
+  
+  
+
+  
+  
+  
+  
+  
+  
+
+  
+
+  
+
+  
+    
+      <div class='py1 quiet mt1 prose-big'>Returns</div>
+      <code>any</code>:
+        the metadata object, it may include:
+<ul>
+<li>p2ma_address - the pay2my.app address iff pay2myapp extension enabled in armadietto server:  this is the defacto remotestorage.js username</li>
+<li>p2ma_token - the pay2my.app token iff pay2myapp extension enabled in armadietto server</li>
+<li>p2ma_signature - the pay2my.app p2ma_token signed by p2ma_address</li>
+</ul>
+
+      
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+</section>
+
+      </div>
+    </div>
+  
+    <div class='border-bottom' id='lucchettogetuseraddress'>
+      <div class="clearfix small pointer toggle-sibling">
+        <div class="py1 contain">
+            <a class='icon pin-right py1 dark-link caret-right'>▸</a>
+            <span class='code strong strong truncate'>getUserAddress</span>
+        </div>
+      </div>
+      <div class="clearfix display-none toggle-target">
+        <section class='p2 mb2 clearfix bg-white minishadow'>
+
+  
+
+  
+    <div class='pre p1 fill-light mt0'>getUserAddress</div>
+  
+  
+
+  
+  
+  
+  
+  
+  
+
+  
+
+  
+
+  
+    
+      <div class='py1 quiet mt1 prose-big'>Returns</div>
+      <code><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a></code>:
+        the user address last seen upon last connection
+
+      
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+</section>
+
+      </div>
+    </div>
+  
+    <div class='border-bottom' id='lucchettogetnamespace'>
+      <div class="clearfix small pointer toggle-sibling">
+        <div class="py1 contain">
+            <a class='icon pin-right py1 dark-link caret-right'>▸</a>
+            <span class='code strong strong truncate'>getNamespace</span>
+        </div>
+      </div>
+      <div class="clearfix display-none toggle-target">
+        <section class='p2 mb2 clearfix bg-white minishadow'>
+
+  
+
+  
+    <div class='pre p1 fill-light mt0'>getNamespace</div>
+  
+  
+
+  
+  
+  
+  
+  
+  
+
+  
+
+  
+
+  
+    
+      <div class='py1 quiet mt1 prose-big'>Returns</div>
+      <code><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a></code>:
+        the lucchetto namespace: under which lucchetto in-app purchase SKU data is stored.
+
+      
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+</section>
+
+      </div>
+    </div>
+  
+    <div class='border-bottom' id='lucchettogetpath'>
+      <div class="clearfix small pointer toggle-sibling">
+        <div class="py1 contain">
+            <a class='icon pin-right py1 dark-link caret-right'>▸</a>
+            <span class='code strong strong truncate'>getPath</span>
+        </div>
+      </div>
+      <div class="clearfix display-none toggle-target">
+        <section class='p2 mb2 clearfix bg-white minishadow'>
+
+  
+
+  <p>Retrieve a remotestorage path to in-app purchase SKUs.</p>
+
+    <div class='pre p1 fill-light mt0'>getPath</div>
+  
+  
+
+  
+  
+  
+  
+  
+  
+
+  
+    <div class='py1 quiet mt1 prose-big'>Parameters</div>
+    <div class='prose'>
+      
+        <div class='space-bottom0'>
+          <div>
+            <span class='code bold'>sku</span> <code class='quiet'>(any)</code>
+	    tag must be a a string comprised of 2 to 20 numbers, lower case letters, hypens, and periods
+
+          </div>
+          
+        </div>
+      
+        <div class='space-bottom0'>
+          <div>
+            <span class='code bold'>price</span> <code class='quiet'>(any)</code>
+	    must be in US dollars, optionally with a period and cents
+
+          </div>
+          
+        </div>
+      
+        <div class='space-bottom0'>
+          <div>
+            <span class='code bold'>within</span> <code class='quiet'>(any)</code>
+	    must be a whole number
+
+          </div>
+          
+        </div>
+      
+    </div>
+  
+
+  
+
+  
+    
+      <div class='py1 quiet mt1 prose-big'>Returns</div>
+      <code><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a></code>:
+        
+      
+    
+  
+
+  
+
+  
+    <div class='py1 quiet mt1 prose-big'>Throws</div>
+    <ul>
+      
+        <li><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>: if parameters not parsable
+</li>
+      
+    </ul>
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+</section>
+
+      </div>
+    </div>
+  
+    <div class='border-bottom' id='lucchettogetsku'>
+      <div class="clearfix small pointer toggle-sibling">
+        <div class="py1 contain">
+            <a class='icon pin-right py1 dark-link caret-right'>▸</a>
+            <span class='code strong strong truncate'>getSku</span>
+        </div>
+      </div>
+      <div class="clearfix display-none toggle-target">
+        <section class='p2 mb2 clearfix bg-white minishadow'>
+
+  
+
+  <p>Retrieve data for a SKU.</p>
+<p>Leverages metadata from the user's armadietto+lucchetto remotestorage connection this instance was constructed with.</p>
+
+    <div class='pre p1 fill-light mt0'>getSku</div>
+  
+  
+
+  
+  
+  
+  
+  
+  
+
+  
+    <div class='py1 quiet mt1 prose-big'>Parameters</div>
+    <div class='prose'>
+      
+        <div class='space-bottom0'>
+          <div>
+            <span class='code bold'>url</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>)</code>
+	    the URL to your, the developer's, armadietto+lucchetto that contains your IAP definitions.
+
+          </div>
+          
+        </div>
+      
+        <div class='space-bottom0'>
+          <div>
+            <span class='code bold'>detail</span> <code class='quiet'>(any)</code>
+	    the 
+<code>detail</code>
+ object from the 
+<code>pay2myapp-appsell-sku-clicked</code>
+ event, see 
+<a href="https://www.npmjs.com/package/pay2my.app">https://www.npmjs.com/package/pay2my.app</a>
+
+          </div>
+          
+        </div>
+      
+    </div>
+  
+
+  
+
+  
+    
+      <div class='py1 quiet mt1 prose-big'>Returns</div>
+      <code><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a></code>:
+        the data payload for the SKU
+
+      
+    
+  
+
+  
+
+  
+    <div class='py1 quiet mt1 prose-big'>Throws</div>
+    <ul>
+      
+        <li>any: if error
+</li>
+      
+    </ul>
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+</section>
+
+      </div>
+    </div>
+  
+</div>
+
+  
+
+  
+
+  
+</section>
+
+          
+        
+      </div>
+    </div>
+  <script src='assets/anchor.js'></script>
+  <script src='assets/split.js'></script>
+  <script src='assets/site.js'></script>
+</body>
+</html>

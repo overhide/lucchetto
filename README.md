@@ -6,9 +6,9 @@ This is a client-side helper library to parse token metadata from tokens returne
 
 Normally  [Armadietto](https://github.com/remotestorage/armadietto) servers return tokens sans any metadata.  However, when extended, the server might return metadata that is useful to the client application.
 
-## [The Documentation](https://doxdox.org/overhide/lucchetto)
+## [The Documentation](https://overhide.github.io/lucchetto/docs/lucchetto.js-rendered-docs/index.html)
 
-[Read the docs](https://doxdox.org/overhide/lucchetto) and see its simple use in:
+[Read the docs](https://overhide.github.io/lucchetto/docs/lucchetto.js-rendered-docs/index.html) and see its simple use in:
 
 - [My Favorite Drinks PATCH](TBD)
 - ["*Lucchetto* Getting Started" example](https://overhide.github.io/armadietto/lucchetto/index.html#) 
@@ -68,4 +68,4 @@ After logging in, you can get latest by retrieving the `getMetadata()` getter:  
 
 
 
-[Read the docs](https://doxdox.org/overhide/lucchetto) for more.
+[Read the docs](https://overhide.github.io/lucchetto/docs/lucchetto.js-rendered-docs/index.html) for more.

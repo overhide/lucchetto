@@ -1,14 +1,27 @@
+
+/**
+ * @ignore
+ */
 const METADATA_REGEX = /,metadata=([^,]*)/;
 
 /**
- * List of lucchetto providing servers for production:  these are shown as options in a dropdown, when this is constructed with `!isTest`:
+ * List of lucchetto providing servers for production:  these are shown as options in the 
+ * [RS widget](https://www.npmjs.com/package/remotestorage-widget) dropdown, 
+ * when the `Lucchetto` class is constructed with `!isTest`:
+ * 
+ * - `@rs.overhide.io`
  */
 const LUCCHETTO_PROVIDERS = [
   '@rs.overhide.io'
 ]
 
 /**
- * List of lucchetto providing servers for testnets:  these are shown as options in a dropdown, when this is constructed with `isTest`:
+ * List of lucchetto providing servers for testnets:  these are shown as options in the 
+ * [RS widget](https://www.npmjs.com/package/remotestorage-widget) dropdown, 
+ * when the `Lucchetto` class is constructed with `isTest`:
+ * 
+ * - `@test.rs.overhide.io`
+ * - `@localhost:8000`
  */
  const LUCCHETTO_PROVIDERS_4_TEST = [
   '@test.rs.overhide.io',
@@ -16,14 +29,45 @@ const LUCCHETTO_PROVIDERS = [
 ]
 
 /**
- * Helper class; reacts to remotestorage.js `onConnected` events to parse metadata out of newly available token.
+ * Helper class; reacts to [remotestorage.js](https://remotestoragejs.readthedocs.io/) `onConnected` events to 
+ * parse metadata out of newly available RS tokens.
+ * 
+ * If the connected RS server is [Lucchetto extended](https://github.com/overhide/armadietto/blob/master/lucchetto/README.md),
+ * the token will provide metadata useful to [pay2my.app](https://pay2my.app/) in-app purchase widgets &mdash; making for a nicer
+ * end-user experience.
+ * 
+ * This calss provides utility functions to fetch in-app purchase data from the app-developer's RS (+Lucchetto) connection.  The 
+ * in-app purchase data must first be [onboarded](https://overhide.github.io/armadietto/lucchetto/onboard.html#) onto a *Lucchetto* 
+ * extended RS server.
+ * 
+ * This class enriches the dropdown of the [RS widget](https://www.npmjs.com/package/remotestorage-widget), if any, embedded in
+ * the DOM.  The enrichment provides server hints as per `LUCCHETTO_PROVIDERS` and `LUCCHETTO_PROVIDERS_4_TEST`.
+ * 
+ * A typical usage of this class along with [remotestorage.js](https://remotestoragejs.readthedocs.io/) 
+ * and [pay2my.app](https://pay2my.app/) widgets might look like:
+ * 
+ * ```
+ *   var rsClient = new RemoteStorage();
+ *   var lucchetto = new Lucchetto(rsClient, true, document.getElementById('hub-id-in-dom'));
+ *   ...
+ *   window.addEventListener('pay2myapp-appsell-sku-clicked', async (e) => { 
+ *     ...
+ *     const result = await lucchetto.getSku(`https://rs.overhide.io`, e.detail);
+ *     console.log(`got SKU results`, { sku: e.detail.sku , result });
+ *     ...
+ *  }, false);
+ * ```
  */
 class Lucchetto {
   
   /**
+   * Instantiate this integration.
+   * 
    * @param {*} remoteStorage - the RS instance available from client.  This is an RS instance connected to the the client-user's data.
    * @param {bool} isTest - flag whether this is all working against testnets or mainnets/prod servers.
-   * @param {*} hub - pay2my.app hub to instrument with credentials coming out of the remoteStorage instance (iff armadietto+luccheto).
+   * @param {*} hub - [pay2my.app hub](https://pay2my.app/) to instrument with credentials coming out of the remoteStorage instance.
+   * If user connects with a *Lucchetto extended* `remoteStorage`, this hub will be instrumented.  Otherwise the hub will need to ask for credentials on in-app
+   * purchase use.
    */
   constructor(remoteStorage, isTest = false, hub = null) {
     this.remoteStorage = remoteStorage;
@@ -41,6 +85,7 @@ class Lucchetto {
 
   /**
    * Regular DOM "loaded" event handler.
+   * @ignore
    */
   onDomLoad = () => {
     this.extendWidget();
@@ -52,6 +97,7 @@ class Lucchetto {
 
   /**
    * remotestorage.js `onConnected` event handler.
+   * @ignore
    */
   onConnected = () => {
     this.metadata = {};
@@ -68,6 +114,7 @@ class Lucchetto {
 
   /**
    * remotestorage.js `onNotConnected` event handler.
+   * @ignore
    */
    onNotConnected = () => {
     this.metadata = {};
@@ -78,6 +125,7 @@ class Lucchetto {
 
   /**
    * remotestorage.js `onError` event handler.
+   * @ignore
    */
    onError = (event) => {
     console.warn(`lucchetto :: onError ${event}`);
@@ -197,24 +245,6 @@ class Lucchetto {
   }
 
   /**
-   * Helper method to wait until user is fully connected to any remotestorage server, lucchetto enabled or not.
-   * 
-   * @returns {Promise} to be resolved when RS is connected.
-   */
-  waitRSConnected = (key) => {
-    return this.connectionPromise;
-  }
-
-  /**
-   * Helper method to wait until user is fully connected to a lucchetto enabled remotestorage server..
-   * 
-   * @returns {Promise} to be resolved when RS is connected.
-   */
-   waitRSIsLucchetto = (key) => {
-    return this.lucchettoPromise;
-  }
-
-  /**
    * Get all metadata from the token
    * 
    * @returns {*} the metadata object, it may include:
@@ -239,7 +269,11 @@ class Lucchetto {
   getNamespace = () => `pay2my.app`;
 
   /**
-   * Retrieve a remotestorage path to in-app purchase SKUs.
+   * Retrieve a remotestorage path to in-app purchase SKUs.  
+   * 
+   * A helper to derive the path on the *Lucchetto* extended RS server.
+   * 
+   * This is the path off of the developer's account and `getNamespace()` namespace .
    * 
    * @param {*} sku - tag must be a a string comprised of 2 to 20 numbers, lower case letters, hypens, and periods
    * @param {*} price - must be in US dollars, optionally with a period and cents
@@ -270,9 +304,10 @@ class Lucchetto {
   /**
    * Retrieve data for a SKU.
    * 
-   * Leverages metadata from the user's armadietto+lucchetto remotestorage connection this instance was constructed with.  
+   * The IAP SKU data (`sku`, `price`, `within`) must first be [onboarded](https://overhide.github.io/armadietto/lucchetto/onboard.html#) onto a *Lucchetto* 
+   * extended RS server.
    * 
-   * @param {string} url - the URL to your, the developer's, armadietto+lucchetto that contains your IAP definitions.
+   * @param {string} url - the URL to your, the developer's, *Lucchetto* extended RS server that contains your IAP SKU definitions.
    * @param {*} detail - the `detail` object from the `pay2myapp-appsell-sku-clicked` event, see https://www.npmjs.com/package/pay2my.app
    * @throws {*} if error
    * @returns {string} the data payload for the SKU

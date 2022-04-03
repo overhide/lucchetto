@@ -1,6 +1,6 @@
 {
   "name": "lucchetto",
-  "version": "1.0.6",
+  "version": "1.0.8",
   "description": "Client side JavaScript helper utilities for working with remotestorage/armadietto servers' token metadata -- servers extended with the pay2my.app extension and others.",
   "main": "index.js",
   "repository": {
@@ -27,6 +27,6 @@
   "scripts": {
     "builddev": "webpack --mode=development",
     "build": "webpack --mode=production",
-    "docs": "documentation build src/lucchetto.js --project-name \"lucchetto.js :: documentation\" --project-version \"$npm_package_version\" --project-homepage \"https://www.npmjs.com/package/lucchetto/v/latest\" --shallow true --format html --output docs/lucchetto.js-rendered-docs"
+    "docs": "documentation build src/lucchetto.js --project-name \"lucchetto.js :: documentation\" --project-homepage \"https://www.npmjs.com/package/lucchetto/v/latest\" --shallow true --format html --output docs/lucchetto.js-rendered-docs"
   }
 }

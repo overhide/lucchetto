@@ -1,23 +1,24 @@
 # Lucchetto
 
-Client side JavaScript helper utilities for working with [remotestorage/armadietto](https://github.com/remotestorage/armadietto) (RS) servers' token metadata &mdash; servers extended for extra capabilities.
+Client side JavaScript helper utilities for working with [remotestorage (RS) servers'](https://remotestorage.io/servers/) token metadata &mdash; only RS servers extended for extra capabilities.
 
-This is a client-side helper library to parse token metadata from tokens returned by [Armadietto](https://github.com/remotestorage/armadietto) / [Armadietto+Lucchetto](https://github.com/overhide/armadietto/tree/master/lucchetto) authentication.
+At present, this is a client-side helper library to parse extended token metadata from tokens returned by the [Armadietto+Lucchetto](https://github.com/overhide/armadietto/tree/master/lucchetto) RS server implementation, while handling non-extended tokens graciously.
 
 Normally  [Armadietto](https://github.com/remotestorage/armadietto) servers return tokens sans any metadata.  However, when extended, the server might return metadata that is useful to the client application.
 
 ## [The Documentation](https://overhide.github.io/lucchetto/docs/lucchetto.js-rendered-docs/index.html)
 
-[Read the docs](https://overhide.github.io/lucchetto/docs/lucchetto.js-rendered-docs/index.html) and see its simple use in:
+[Read the docs](https://overhide.github.io/lucchetto/docs/lucchetto.js-rendered-docs/index.html) and see its simple use in the:
 
-- [My Favorite Drinks PATCH](TBD)
-- ["*Lucchetto* Getting Started" example](https://overhide.github.io/armadietto/lucchetto/index.html#) 
+- [*Remote Storage* Tutorial](https://github.com/overhide/remotestorage-tutorial) 
+
+
 
 ## Use Cases
 
 ### [*Lucchetto* extension](https://github.com/overhide/armadietto/tree/master/lucchetto)
 
-When *Armadietto* is extended to use https://pay2my.app login and in-app purchase widgets, it returns useful metadata to help the client application leverage the login for additional *pay2my.app* widgets &mdash; above and beyond those used for *Armadietto* login.  E.g. additional widgets for payments to the application developer for in-app purchased items.
+At present, [Armadietto](https://github.com/remotestorage/armadietto), the Node.js RS implementation, is the only implementation extended to use https://pay2my.app login and in-app purchase widgets.  This extension returns useful metadata for additional *pay2my.app* widgets within the client app &mdash; above and beyond those used for the regular RS login.  Namely, additional widgets for payments to the application developer for in-app purchased items.
 
 Provides the following keys:
 
@@ -30,6 +31,8 @@ Provides the following keys:
 
 Use in conjunction with [remotestorage.js](https://github.com/remotestorage/remotestorage.js) within your *remotestorage* (RS) enabled application.
 
+See the [*Remote Storage* Tutorial](https://github.com/overhide/remotestorage-tutorial).
+
 > ⚠ *Lucchetto* is useful in support of in-app purchases when your RS app users connect to a regular RS server; but extra useful when users connect storage from an *extended* *Lucchetto* RS server.
 
 
@@ -37,7 +40,7 @@ Use in conjunction with [remotestorage.js](https://github.com/remotestorage/remo
 ```
   "dependencies": {
     ..
-    "lucchetto": "^1.0.0",
+    "lucchetto": "^1.0.8",
     ..
   }
 ```
@@ -55,17 +58,19 @@ Or from a CDN:
 Once available, in your source code make *Lucchetto* work off of  [remotestorage.js](https://github.com/remotestorage/remotestorage.js) :
 
 ``` 
-var lucchetto = new Lucchetto(remoteStorage);
-..
-var metadata = lucchetto.getMetadata();
+ var rsClient = new RemoteStorage();
+ var lucchetto = new Lucchetto(rsClient, true, document.getElementById('hub-id-in-dom'));
+ ...
+ window.addEventListener('pay2myapp-appsell-sku-clicked', async (e) => { 
+   ...
+   const result = await lucchetto.getSku(`https://rs.overhide.io`, e.detail);
+   console.log(`got SKU results`, { sku: e.detail.sku , result });
+   ...
+ }, false);
 ```
 
 
 
 *Lucchetto* will respond to connections against *remotestorage.js* and update it's state.  
-
-After logging in, you can get latest by retrieving the `getMetadata()` getter:  it's a simple object.  
-
-
 
 [Read the docs](https://overhide.github.io/lucchetto/docs/lucchetto.js-rendered-docs/index.html) for more.

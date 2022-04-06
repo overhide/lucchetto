@@ -1,6 +1,6 @@
 {
   "name": "lucchetto",
-  "version": "1.0.10",
+  "version": "1.0.11",
   "description": "Client side JavaScript helper utilities for working with pay2my.app widgets leveraging Armadietto+Lucchetto RS server implementations such as https://overhide.io#baas.",
   "main": "index.js",
   "repository": {

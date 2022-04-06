@@ -304,7 +304,7 @@ class Lucchetto {
    * This is the path off of the developer's account and `getNamespace()` namespace .
    * 
    * @param {*} sku - tag must be a a string comprised of 2 to 20 numbers, lower case letters, hypens, and periods
-   * @param {*} price - must be in US dollars, optionally with a period and cents
+   * @param {*} price - must be in US dollars, optionally with a period and cents:  0 or 50 cents and up
    * @param {*} within - must be a whole number
    * @throws {string} if parameters not parsable
    * @returns {string}
@@ -320,11 +320,11 @@ class Lucchetto {
       throw '"SKU" must be a a string comprised of 2 to 20 numbers, lower case letters, hypens, and periods, e.g. `item`';
     }
 
-    price = (+price).toFixed(2);
-
-    if (price < .5) {
-      throw '"price" must be > "0.50"';
+    if (+price < .5 && +price != 0) {
+      throw '"price" must be > "0.50" or "0"';
     }
+
+    price = (+price).toFixed(2);
 
     return `/${sku}/${price}/${within}`;
   }

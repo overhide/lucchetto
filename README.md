@@ -22,7 +22,7 @@ In your `package.json`:
 ```
   "dependencies": {
     ..
-    "lucchetto": "^1.0.9",
+    "lucchetto": "^1.0.11",
     ..
   }
 ```

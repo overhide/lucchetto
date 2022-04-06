@@ -1,46 +1,28 @@
 # Lucchetto
 
-Client side JavaScript helper utilities for working with [remotestorage (RS) servers'](https://remotestorage.io/servers/) token metadata &mdash; only RS servers extended for extra capabilities.
+Client side JavaScript helper utilities for working with [pay2my.app](https://pay2my.app) widgets leveraging [Armadietto+Lucchetto](https://github.com/overhide/armadietto/tree/master/lucchetto) RS server implementations such as [overhide.io](https://overhide.io#baas).
 
-At present, this is a client-side helper library to parse extended token metadata from tokens returned by the [Armadietto+Lucchetto](https://github.com/overhide/armadietto/tree/master/lucchetto) RS server implementation, while handling non-extended tokens graciously.
 
-Normally  [Armadietto](https://github.com/remotestorage/armadietto) servers return tokens sans any metadata.  However, when extended, the server might return metadata that is useful to the client application.
 
 ## [The Documentation](https://overhide.github.io/lucchetto/docs/lucchetto.js-rendered-docs/index.html)
 
 [Read the docs](https://overhide.github.io/lucchetto/docs/lucchetto.js-rendered-docs/index.html) and see its simple use in the:
 
+- [pay2my.app demos](https://www.npmjs.com/package/pay2my.app/v/latest#demos)
 - [*Remote Storage* Tutorial](https://github.com/overhide/remotestorage-tutorial) 
 
 
 
-## Use Cases
-
-### [*Lucchetto* extension](https://github.com/overhide/armadietto/tree/master/lucchetto)
-
-At present, [Armadietto](https://github.com/remotestorage/armadietto), the Node.js RS implementation, is the only implementation extended to use https://pay2my.app login and in-app purchase widgets.  This extension returns useful metadata for additional *pay2my.app* widgets within the client app &mdash; above and beyond those used for the regular RS login.  Namely, additional widgets for payments to the application developer for in-app purchased items.
-
-Provides the following keys:
-
-- **p2ma_address** &mdash; the pay2my.app address iff pay2myapp extension enabled in armadietto server:  this is the defacto remotestorage.js username
-- **p2ma_token** &mdash; the pay2my.app token iff pay2myapp extension enabled in armadietto server
-- **p2ma_signature** &mdash; the pay2my.app p2ma_token signed by p2ma_address
-- **p2ma_imparter** &mdash; imparter for use with a [pay2myapp-hub API](https://github.com/overhide/pay2my.app#pay2myapp-hub-) and others, if you need to go that low
-
 ## Usage
 
-Use in conjunction with [remotestorage.js](https://github.com/remotestorage/remotestorage.js) within your *remotestorage* (RS) enabled application.
+### Bring It In
 
-See the [*Remote Storage* Tutorial](https://github.com/overhide/remotestorage-tutorial).
-
-> ⚠ *Lucchetto* is useful in support of in-app purchases when your RS app users connect to a regular RS server; but extra useful when users connect storage from an *extended* *Lucchetto* RS server.
-
-
+In your `package.json`:
 
 ```
   "dependencies": {
     ..
-    "lucchetto": "^1.0.8",
+    "lucchetto": "^1.0.9",
     ..
   }
 ```
@@ -55,6 +37,58 @@ Or from a CDN:
 
 
 
+### Onboard Your In-App Purchase SKUs
+
+First you'll likely want to [get familiar with the onboarding process](https://github.com/overhide/armadietto/tree/master/lucchetto#onboard-to-us-dollars-ledger--as-the-dev-receiving-).
+
+You setup your back-end data with the help of the [Lucchetto SKU Onboard](https://overhide.github.io/armadietto/lucchetto/onboard.html#) app.
+
+Simply connect to the application with your [overhide.io](https://overhide.io#baas) account (or whatever other [Armadietto+Lucchetto](https://github.com/overhide/armadietto/tree/master/lucchetto) RS server account).
+
+You might also want to read the last section of the [*Remote Storage* Tutorial](https://github.com/overhide/remotestorage-tutorial).
+
+
+
+### Use It In Any of Your Applications
+
+See the [How-To Tutorial Guide](https://github.com/overhide/pay2my.app/blob/master/howto/intro/README.md) but skip the "Leveraging a Back-End" section:  after all you're here leveraging this *lucchetto.js* with a hosted back-end.
+
+Once available, in your source code call the back-end:
+
+``` 
+ var lucchetto = new Lucchetto(null, true, document.getElementById('hub-id-in-dom'));
+ ...
+ window.addEventListener('pay2myapp-appsell-sku-clicked', async (e) => { 
+   ...
+   const result = await lucchetto.getSku(`https://test.rs.overhide.io`, e.detail);
+   console.log(`got SKU results`, { sku: e.detail.sku , result });
+   ...
+ }, false);
+```
+
+
+
+> ⚠ Take not of the `null` *remoteStorage* (first) constructor parameter: our users are not connecting with the RS mechanism in our non-RS apps.
+
+
+
+The `https://test.rs.overhide.io` is the [Armadietto+Lucchetto](https://github.com/overhide/armadietto/tree/master/lucchetto) RS server you're storing your IAP SKUs on, can be one of:
+
+-  [https://test.rs.overhide.io](https://test.rs.overhide.io/) for testnet / fake money / coding
+-  [https://rs.overhide.io](https://rs.overhide.io/) for live / production deployment
+
+
+
+### Use It In Your *Remote-Storage* Application
+
+Use in conjunction with [remotestorage.js](https://github.com/remotestorage/remotestorage.js) within your *remotestorage* (RS) enabled application.
+
+See the [*Remote Storage* Tutorial](https://github.com/overhide/remotestorage-tutorial).
+
+> ⚠ *Lucchetto* is useful in support of in-app purchases when your RS app users connect to a regular RS server; but extra useful when users connect storage from an *extended* *Lucchetto* RS server.
+
+
+
 Once available, in your source code make *Lucchetto* work off of  [remotestorage.js](https://github.com/remotestorage/remotestorage.js) :
 
 ``` 
@@ -63,7 +97,7 @@ Once available, in your source code make *Lucchetto* work off of  [remotestorage
  ...
  window.addEventListener('pay2myapp-appsell-sku-clicked', async (e) => { 
    ...
-   const result = await lucchetto.getSku(`https://rs.overhide.io`, e.detail);
+   const result = await lucchetto.getSku(`https://test.rs.overhide.io`, e.detail);
    console.log(`got SKU results`, { sku: e.detail.sku , result });
    ...
  }, false);
@@ -72,5 +106,14 @@ Once available, in your source code make *Lucchetto* work off of  [remotestorage
 
 
 *Lucchetto* will respond to connections against *remotestorage.js* and update it's state.  
+
+
+
+The `https://test.rs.overhide.io` is the [Armadietto+Lucchetto](https://github.com/overhide/armadietto/tree/master/lucchetto) RS server you're storing your IAP SKUs on, can be one of:
+
+-  [https://test.rs.overhide.io](https://test.rs.overhide.io/) for testnet / fake money / coding
+-  [https://rs.overhide.io](https://rs.overhide.io/) for live / production deployment
+
+
 
 [Read the docs](https://overhide.github.io/lucchetto/docs/lucchetto.js-rendered-docs/index.html) for more.

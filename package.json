@@ -1,7 +1,7 @@
 {
   "name": "lucchetto",
-  "version": "1.0.8",
-  "description": "Client side JavaScript helper utilities for working with remotestorage/armadietto servers' token metadata -- servers extended with the pay2my.app extension and others.",
+  "version": "1.0.9",
+  "description": "Client side JavaScript helper utilities for working with pay2my.app widgets leveraging Armadietto+Lucchetto RS server implementations such as https://overhide.io#baas.",
   "main": "index.js",
   "repository": {
     "type": "git",

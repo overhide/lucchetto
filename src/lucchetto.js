@@ -5,6 +5,8 @@
 const METADATA_REGEX = /,metadata=([^,]*)/;
 
 /**
+ * ⚠ This may only be useful in the context of being connected to a user's *remote-storage* instance: non-null `remoteStorage` constructor parameter.
+ * 
  * List of lucchetto providing servers for production:  these are shown as options in the 
  * [RS widget](https://www.npmjs.com/package/remotestorage-widget) dropdown, 
  * when the `Lucchetto` class is constructed with `!isTest`:
@@ -16,6 +18,8 @@ const LUCCHETTO_PROVIDERS = [
 ]
 
 /**
+ * ⚠ This may only be useful in the context of being connected to a user's *remote-storage* instance: non-null `remoteStorage` constructor parameter.
+ * 
  * List of lucchetto providing servers for testnets:  these are shown as options in the 
  * [RS widget](https://www.npmjs.com/package/remotestorage-widget) dropdown, 
  * when the `Lucchetto` class is constructed with `isTest`:
@@ -29,16 +33,34 @@ const LUCCHETTO_PROVIDERS = [
 ]
 
 /**
- * Helper class; reacts to [remotestorage.js](https://remotestoragejs.readthedocs.io/) `onConnected` events to 
+ * This calss provides utility functions to fetch in-app purchase data from the app-developer's RS (+Lucchetto) connection.  The 
+ * in-app purchase data must first be [onboarded](https://overhide.github.io/armadietto/lucchetto/onboard.html#) onto a *Lucchetto* 
+ * extended RS server.
+ * 
+ * A typical usage of this class along with [remotestorage.js](https://remotestoragejs.readthedocs.io/) 
+ * and [pay2my.app](https://pay2my.app/) widgets might look like:
+ * 
+ * ```
+ *   var lucchetto = new Lucchetto(null, true, document.getElementById('hub-id-in-dom'));
+ *   ...
+ *   window.addEventListener('pay2myapp-appsell-sku-clicked', async (e) => { 
+ *     ...
+ *     const result = await lucchetto.getSku(`https://test.rs.overhide.io`, e.detail);
+ *     console.log(`got SKU results`, { sku: e.detail.sku , result });
+ *     ...
+ *  }, false);
+ * ```
+ * 
+ * ---
+ * 
+ * ⚠ In the context of being connected to your user's *remote-storage* instance: a non-null `remoteStorage` constructor (first) parameter:
+ * 
+ * Reacts to [remotestorage.js](https://remotestoragejs.readthedocs.io/) `onConnected` events to 
  * parse metadata out of newly available RS tokens.
  * 
  * If the connected RS server is [Lucchetto extended](https://github.com/overhide/armadietto/blob/master/lucchetto/README.md),
  * the token will provide metadata useful to [pay2my.app](https://pay2my.app/) in-app purchase widgets &mdash; making for a nicer
  * end-user experience.
- * 
- * This calss provides utility functions to fetch in-app purchase data from the app-developer's RS (+Lucchetto) connection.  The 
- * in-app purchase data must first be [onboarded](https://overhide.github.io/armadietto/lucchetto/onboard.html#) onto a *Lucchetto* 
- * extended RS server.
  * 
  * This class enriches the dropdown of the [RS widget](https://www.npmjs.com/package/remotestorage-widget), if any, embedded in
  * the DOM.  The enrichment provides server hints as per `LUCCHETTO_PROVIDERS` and `LUCCHETTO_PROVIDERS_4_TEST`.
@@ -52,7 +74,7 @@ const LUCCHETTO_PROVIDERS = [
  *   ...
  *   window.addEventListener('pay2myapp-appsell-sku-clicked', async (e) => { 
  *     ...
- *     const result = await lucchetto.getSku(`https://rs.overhide.io`, e.detail);
+ *     const result = await lucchetto.getSku(`https://test.rs.overhide.io`, e.detail);
  *     console.log(`got SKU results`, { sku: e.detail.sku , result });
  *     ...
  *  }, false);
@@ -90,6 +112,7 @@ class Lucchetto {
   onDomLoad = () => {
     this.extendWidget();
     this.initHub();
+    if (!this.remoteStorage) return;
     this.remoteStorage.on('connected', this.onConnected);
     this.remoteStorage.on('not-connected', this.onNotConnected);
     this.remoteStorage.on('error', this.onError);
@@ -245,6 +268,8 @@ class Lucchetto {
   }
 
   /**
+   * ⚠ This may only be useful in the context of being connected to a user's *remote-storage* instance: non-null `remoteStorage` constructor parameter.
+   * 
    * Get all metadata from the token
    * 
    * @returns {*} the metadata object, it may include:
@@ -257,10 +282,12 @@ class Lucchetto {
   }  
 
   /**
+   * ⚠ This may only be useful in the context of being connected to a user's *remote-storage* instance: non-null `remoteStorage` constructor parameter.
+   *
    * @returns {string} the user address last seen upon last connection
    */
   getUserAddress = () => {
-    return this.currentUserAddress && this.currentUserAddress === this.remoteStorage.remote.userAddress ? this.currentUserAddress : null;
+    return this.remoteStorage && this.currentUserAddress && this.currentUserAddress === this.remoteStorage.remote.userAddress ? this.currentUserAddress : null;
   }
 
   /**
@@ -269,6 +296,8 @@ class Lucchetto {
   getNamespace = () => `pay2my.app`;
 
   /**
+   * ⚠ This may only be useful in the context of being connected to a user's *remote-storage* instance: non-null `remoteStorage` constructor parameter.
+   * 
    * Retrieve a remotestorage path to in-app purchase SKUs.  
    * 
    * A helper to derive the path on the *Lucchetto* extended RS server.

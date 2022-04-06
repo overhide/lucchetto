@@ -5,7 +5,7 @@
 const METADATA_REGEX = /,metadata=([^,]*)/;
 
 /**
- * ⚠ This may only be useful in the context of being connected to a user's *remote-storage* instance: non-null `remoteStorage` constructor parameter.
+ * ⚠ This may only be useful when connecting to users' *remote-storage* instances through a non-null `remoteStorage` constructor parameter.
  * 
  * List of lucchetto providing servers for production:  these are shown as options in the 
  * [RS widget](https://www.npmjs.com/package/remotestorage-widget) dropdown, 
@@ -18,7 +18,7 @@ const LUCCHETTO_PROVIDERS = [
 ]
 
 /**
- * ⚠ This may only be useful in the context of being connected to a user's *remote-storage* instance: non-null `remoteStorage` constructor parameter.
+ * ⚠ This may only be useful when connecting to users' *remote-storage* instances through a non-null `remoteStorage` constructor parameter.
  * 
  * List of lucchetto providing servers for testnets:  these are shown as options in the 
  * [RS widget](https://www.npmjs.com/package/remotestorage-widget) dropdown, 
@@ -37,8 +37,7 @@ const LUCCHETTO_PROVIDERS = [
  * in-app purchase data must first be [onboarded](https://overhide.github.io/armadietto/lucchetto/onboard.html#) onto a *Lucchetto* 
  * extended RS server.
  * 
- * A typical usage of this class along with [remotestorage.js](https://remotestoragejs.readthedocs.io/) 
- * and [pay2my.app](https://pay2my.app/) widgets might look like:
+ * A typical usage of this class with [pay2my.app](https://pay2my.app/) widgets might look like:
  * 
  * ```
  *   var lucchetto = new Lucchetto(null, true, document.getElementById('hub-id-in-dom'));
@@ -53,7 +52,7 @@ const LUCCHETTO_PROVIDERS = [
  * 
  * ---
  * 
- * ⚠ In the context of being connected to your user's *remote-storage* instance: a non-null `remoteStorage` constructor (first) parameter:
+ * ⚠ In the context of being connected to your users' *remote-storage* instances through a non-null `remoteStorage` constructor (first) parameter:
  * 
  * Reacts to [remotestorage.js](https://remotestoragejs.readthedocs.io/) `onConnected` events to 
  * parse metadata out of newly available RS tokens.
@@ -268,7 +267,7 @@ class Lucchetto {
   }
 
   /**
-   * ⚠ This may only be useful in the context of being connected to a user's *remote-storage* instance: non-null `remoteStorage` constructor parameter.
+   * ⚠ This may only be useful when connecting to users' *remote-storage* instances through a non-null `remoteStorage` constructor parameter.
    * 
    * Get all metadata from the token
    * 
@@ -282,7 +281,7 @@ class Lucchetto {
   }  
 
   /**
-   * ⚠ This may only be useful in the context of being connected to a user's *remote-storage* instance: non-null `remoteStorage` constructor parameter.
+   * ⚠ This may only be useful when connecting to users' *remote-storage* instances through a non-null `remoteStorage` constructor parameter.
    *
    * @returns {string} the user address last seen upon last connection
    */
@@ -296,7 +295,7 @@ class Lucchetto {
   getNamespace = () => `pay2my.app`;
 
   /**
-   * ⚠ This may only be useful in the context of being connected to a user's *remote-storage* instance: non-null `remoteStorage` constructor parameter.
+   * ⚠ This may only be useful when connecting to users' *remote-storage* instances through a non-null `remoteStorage` constructor parameter.
    * 
    * Retrieve a remotestorage path to in-app purchase SKUs.  
    * 

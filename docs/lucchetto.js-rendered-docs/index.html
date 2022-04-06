@@ -2,8 +2,8 @@
 <html lang="en">
 <head>
   <meta charset='utf-8'>
-  <title>lucchetto.js :: documentation 1.0.8 | Documentation</title>
-  <meta name='description' content='Client side JavaScript helper utilities for working with remotestorage/armadietto servers&#39; token metadata -- servers extended with the pay2my.app extension and others.'>
+  <title>lucchetto.js :: documentation 1.0.10 | Documentation</title>
+  <meta name='description' content='Client side JavaScript helper utilities for working with pay2my.app widgets leveraging Armadietto+Lucchetto RS server implementations such as https://overhide.io#baas.'>
   <meta name='viewport' content='width=device-width,initial-scale=1'>
   <link href='assets/bass.css' rel='stylesheet'>
   <link href='assets/style.css' rel='stylesheet'>
@@ -15,7 +15,7 @@
       <div id='split-left' class='overflow-auto fs0 height-viewport-100'>
         <div class='py1 px2'>
           <h3 class='mb0 no-anchor'>lucchetto.js :: documentation</h3>
-          <div class='mb1'><code>1.0.8</code></div>
+          <div class='mb1'><code>1.0.10</code></div>
           <input
             placeholder='Filter'
             id='filter-input'
@@ -122,7 +122,8 @@
   </div>
   
 
-  <p>List of lucchetto providing servers for production:  these are shown as options in the
+  <p>⚠ This may only be useful when connecting to users' <em>remote-storage</em> instances through a non-null <code>remoteStorage</code> constructor parameter.</p>
+<p>List of lucchetto providing servers for production:  these are shown as options in the
 <a href="https://www.npmjs.com/package/remotestorage-widget">RS widget</a> dropdown,
 when the <code>Lucchetto</code> class is constructed with <code>!isTest</code>:</p>
 <ul>
@@ -177,7 +178,8 @@ when the <code>Lucchetto</code> class is constructed with <code>!isTest</code>:<
   </div>
   
 
-  <p>List of lucchetto providing servers for testnets:  these are shown as options in the
+  <p>⚠ This may only be useful when connecting to users' <em>remote-storage</em> instances through a non-null <code>remoteStorage</code> constructor parameter.</p>
+<p>List of lucchetto providing servers for testnets:  these are shown as options in the
 <a href="https://www.npmjs.com/package/remotestorage-widget">RS widget</a> dropdown,
 when the <code>Lucchetto</code> class is constructed with <code>isTest</code>:</p>
 <ul>
@@ -233,14 +235,26 @@ when the <code>Lucchetto</code> class is constructed with <code>isTest</code>:</
   </div>
   
 
-  <p>Helper class; reacts to <a href="https://remotestoragejs.readthedocs.io/">remotestorage.js</a> <code>onConnected</code> events to
+  <p>This calss provides utility functions to fetch in-app purchase data from the app-developer's RS (+Lucchetto) connection.  The
+in-app purchase data must first be <a href="https://overhide.github.io/armadietto/lucchetto/onboard.html#">onboarded</a> onto a <em>Lucchetto</em>
+extended RS server.</p>
+<p>A typical usage of this class with <a href="https://pay2my.app/">pay2my.app</a> widgets might look like:</p>
+<pre><code>  var lucchetto = new Lucchetto(null, true, document.getElementById('hub-id-in-dom'));
+  ...
+  window.addEventListener('pay2myapp-appsell-sku-clicked', async (e) => { 
+    ...
+    const result = await lucchetto.getSku(`https://test.rs.overhide.io`, e.detail);
+    console.log(`got SKU results`, { sku: e.detail.sku , result });
+    ...
+ }, false);
+</code></pre>
+<hr>
+<p>⚠ In the context of being connected to your users' <em>remote-storage</em> instances through a non-null <code>remoteStorage</code> constructor (first) parameter:</p>
+<p>Reacts to <a href="https://remotestoragejs.readthedocs.io/">remotestorage.js</a> <code>onConnected</code> events to
 parse metadata out of newly available RS tokens.</p>
 <p>If the connected RS server is <a href="https://github.com/overhide/armadietto/blob/master/lucchetto/README.md">Lucchetto extended</a>,
 the token will provide metadata useful to <a href="https://pay2my.app/">pay2my.app</a> in-app purchase widgets — making for a nicer
 end-user experience.</p>
-<p>This calss provides utility functions to fetch in-app purchase data from the app-developer's RS (+Lucchetto) connection.  The
-in-app purchase data must first be <a href="https://overhide.github.io/armadietto/lucchetto/onboard.html#">onboarded</a> onto a <em>Lucchetto</em>
-extended RS server.</p>
 <p>This class enriches the dropdown of the <a href="https://www.npmjs.com/package/remotestorage-widget">RS widget</a>, if any, embedded in
 the DOM.  The enrichment provides server hints as per <code>LUCCHETTO_PROVIDERS</code> and <code>LUCCHETTO_PROVIDERS_4_TEST</code>.</p>
 <p>A typical usage of this class along with <a href="https://remotestoragejs.readthedocs.io/">remotestorage.js</a>
@@ -250,7 +264,7 @@ and <a href="https://pay2my.app/">pay2my.app</a> widgets might look like:</p>
   ...
   window.addEventListener('pay2myapp-appsell-sku-clicked', async (e) => { 
     ...
-    const result = await lucchetto.getSku(`https://rs.overhide.io`, e.detail);
+    const result = await lucchetto.getSku(`https://test.rs.overhide.io`, e.detail);
     console.log(`got SKU results`, { sku: e.detail.sku , result });
     ...
  }, false);
@@ -338,7 +352,8 @@ purchase use.
 
   
 
-  <p>Get all metadata from the token</p>
+  <p>⚠ This may only be useful when connecting to users' <em>remote-storage</em> instances through a non-null <code>remoteStorage</code> constructor parameter.</p>
+<p>Get all metadata from the token</p>
 
     <div class='pre p1 fill-light mt0'>getMetadata</div>
   
@@ -400,7 +415,8 @@ purchase use.
 
   
 
-  
+  <p>⚠ This may only be useful when connecting to users' <em>remote-storage</em> instances through a non-null <code>remoteStorage</code> constructor parameter.</p>
+
     <div class='pre p1 fill-light mt0'>getUserAddress</div>
   
   
@@ -512,7 +528,8 @@ purchase use.
 
   
 
-  <p>Retrieve a remotestorage path to in-app purchase SKUs.</p>
+  <p>⚠ This may only be useful when connecting to users' <em>remote-storage</em> instances through a non-null <code>remoteStorage</code> constructor parameter.</p>
+<p>Retrieve a remotestorage path to in-app purchase SKUs.</p>
 <p>A helper to derive the path on the <em>Lucchetto</em> extended RS server.</p>
 <p>This is the path off of the developer's account and <code>getNamespace()</code> namespace .</p>
 

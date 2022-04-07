@@ -40,7 +40,9 @@ const LUCCHETTO_PROVIDERS = [
  * A typical usage of this class with [pay2my.app](https://pay2my.app/) widgets might look like:
  * 
  * ```
- *   var lucchetto = new Lucchetto(null, true, document.getElementById('hub-id-in-dom'));
+ *   var lucchetto = new Lucchetto({
+ *       overhideIsTest: true, 
+ *       pay2myAppHub: document.getElementById('hub-id-in-dom')});
  *   ...
  *   window.addEventListener('pay2myapp-appsell-sku-clicked', async (e) => { 
  *     ...
@@ -69,7 +71,10 @@ const LUCCHETTO_PROVIDERS = [
  * 
  * ```
  *   var rsClient = new RemoteStorage();
- *   var lucchetto = new Lucchetto(rsClient, true, document.getElementById('hub-id-in-dom'));
+ *   var lucchetto = new Lucchetto({
+ *       remoteStorage: rsClient,
+ *       overhideIsTest: true, 
+ *       pay2myAppHub: document.getElementById('hub-id-in-dom')});
  *   ...
  *   window.addEventListener('pay2myapp-appsell-sku-clicked', async (e) => { 
  *     ...
@@ -78,25 +83,26 @@ const LUCCHETTO_PROVIDERS = [
  *     ...
  *  }, false);
  * ```
+ * 
+ * ---
+ * 
+ * @param {Object} options the construction options
+ * @param {Object} options.remoteStorage the RS instance available from client.  This is an RS instance connected to the the client-user's data.  Set this to `null` if you're using *lucchetto* outside of a *remote-storage* app, just for the `getSku(..)` endpoint.
+ * @param {bool} options.overhideIsTest flag whether this is all working against testnets or mainnets/prod servers.
+ * @param {Object} options.pay2myAppHub [pay2my.app hub](https://pay2my.app/) to instrument with credentials coming out of the remoteStorage instance.
+ * If user connects with a [Lucchetto extended](https://github.com/overhide/armadietto/tree/master/lucchetto) `remoteStorage`, this hub will be instrumented.  Otherwise the hub will need to ask for credentials on in-app purchase use.
+ * @param {Object} options.overhideApiKey the API key to use, [get an API key](https://token.overhide.io/register) for the right network, either  testnet or mainnet.  If the `remoteStorage` instance is provided and is a [Lucchetto extended](https://github.com/overhide/armadietto/tree/master/lucchetto) RS server, you may leave this as `null`: a *Lucchetto* extended RS server will provide a user-specific token to use with `getSku(..)` *overhide* connections. * 
  */
 class Lucchetto {
   
-  /**
-   * Instantiate this integration.
-   * 
-   * @param {*} remoteStorage - the RS instance available from client.  This is an RS instance connected to the the client-user's data.
-   * @param {bool} isTest - flag whether this is all working against testnets or mainnets/prod servers.
-   * @param {*} hub - [pay2my.app hub](https://pay2my.app/) to instrument with credentials coming out of the remoteStorage instance.
-   * If user connects with a *Lucchetto extended* `remoteStorage`, this hub will be instrumented.  Otherwise the hub will need to ask for credentials on in-app
-   * purchase use.
-   */
-  constructor(remoteStorage, isTest = false, hub = null) {
+  constructor({remoteStorage, overhideIsTest, pay2myAppHub, overhideApiKey} = {remoteStorage: null, overhideIsTest: false, pay2myAppHub: null, overhideApiKey: null}) {
     this.remoteStorage = remoteStorage;
     this.metadata = {};
     this.previousToken = null;
     this.currentUserAddress = null;
-    this.isTest = isTest;
-    this.hub = hub;
+    this.isTest = overhideIsTest;
+    this.hub = pay2myAppHub;
+    this.apiKey = overhideApiKey;
     this.lastImparterToken = null;
 
     this.reinitConnectionPromise();
@@ -191,17 +197,14 @@ class Lucchetto {
       console.warn(`lucchetto :: no pay2my.app hub configured for lucchetto therefore no IAPs`);
       return;
     }
-    if (this.isTest) {
-      this.hub.setAttribute('apiKey', `0x9a6aef977a293b5c49ac5fcdd6376010e027549b8aa0ff97bc65a1d8649aef62`);
-    } else {
-      this.hub.setAttribute('apiKey', `0xc16f6e6d8666fdd835d909422fc141dfe5efcbcca3125bf746ef63019c486e47`);
-    }      
+    if (this.apiKey) this.hub.setAttribute('apiKey', this.apiKey);
   }
 
   instrumentHub = () => {
     const currentImparterToken = JSON.stringify(this.metadata);;
     if (this.hub && 'p2ma_address' in this.metadata && this.lastImparterToken !== currentImparterToken) {
       console.log(`lucchetto :: instrumenting hub`);
+      this.hub.setAttribute('token', this.metadata.p2ma_token);
       this.hub.setCurrentImparterChecked(
         this.metadata.p2ma_imparter,
         this.metadata.p2ma_token,

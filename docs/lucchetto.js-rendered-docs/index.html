@@ -239,7 +239,9 @@ when the <code>Lucchetto</code> class is constructed with <code>isTest</code>:</
 in-app purchase data must first be <a href="https://overhide.github.io/armadietto/lucchetto/onboard.html#">onboarded</a> onto a <em>Lucchetto</em>
 extended RS server.</p>
 <p>A typical usage of this class with <a href="https://pay2my.app/">pay2my.app</a> widgets might look like:</p>
-<pre><code>  var lucchetto = new Lucchetto(null, true, document.getElementById('hub-id-in-dom'));
+<pre><code>  var lucchetto = new Lucchetto({
+      overhideIsTest: true, 
+      pay2myAppHub: document.getElementById('hub-id-in-dom')});
   ...
   window.addEventListener('pay2myapp-appsell-sku-clicked', async (e) => { 
     ...
@@ -260,7 +262,10 @@ the DOM.  The enrichment provides server hints as per <code>LUCCHETTO_PROVIDERS<
 <p>A typical usage of this class along with <a href="https://remotestoragejs.readthedocs.io/">remotestorage.js</a>
 and <a href="https://pay2my.app/">pay2my.app</a> widgets might look like:</p>
 <pre><code>  var rsClient = new RemoteStorage();
-  var lucchetto = new Lucchetto(rsClient, true, document.getElementById('hub-id-in-dom'));
+  var lucchetto = new Lucchetto({
+      remoteStorage: rsClient,
+      overhideIsTest: true, 
+      pay2myAppHub: document.getElementById('hub-id-in-dom')});
   ...
   window.addEventListener('pay2myapp-appsell-sku-clicked', async (e) => { 
     ...
@@ -269,8 +274,9 @@ and <a href="https://pay2my.app/">pay2my.app</a> widgets might look like:</p>
     ...
  }, false);
 </code></pre>
+<hr>
 
-    <div class='pre p1 fill-light mt0'>new Lucchetto(remoteStorage: any, isTest: bool, hub: any)</div>
+    <div class='pre p1 fill-light mt0'>new Lucchetto(options: <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a>)</div>
   
   
 
@@ -287,37 +293,91 @@ and <a href="https://pay2my.app/">pay2my.app</a> widgets might look like:</p>
       
         <div class='space-bottom0'>
           <div>
-            <span class='code bold'>remoteStorage</span> <code class='quiet'>(any)</code>
-	    the RS instance available from client.  This is an RS instance connected to the the client-user's data.
+            <span class='code bold'>options</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a>
+            = <code>{remoteStorage:null,overhideIsTest:false,pay2myAppHub:null,overhideApiKey:null}</code>)</code>
+	    the construction options
 
           </div>
           
-        </div>
-      
-        <div class='space-bottom0'>
-          <div>
-            <span class='code bold'>isTest</span> <code class='quiet'>(bool
-            = <code>false</code>)</code>
-	    flag whether this is all working against testnets or mainnets/prod servers.
+          <table class='mt1 mb2 fixed-table h5 col-12'>
+            <colgroup>
+              <col width='30%' />
+              <col width='70%' />
+            </colgroup>
+            <thead>
+              <tr class='bold fill-light'>
+                <th>Name</th>
+                <th>Description</th>
+              </tr>
+            </thead>
+            <tbody class='mt1'>
+              
+                <tr>
+  <td class='break-word'><span class='code bold'>options.remoteStorage</span> <code class='quiet'><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a></code>
+  </td>
+  <td class='break-word'><span>the RS instance available from client.  This is an RS instance connected to the the client-user's data.  Set this to 
+<code>null</code>
+ if you're using 
+<em>lucchetto</em>
+ outside of a 
+<em>remote-storage</em>
+ app, just for the 
+<code>getSku(..)</code>
+ endpoint.
+</span></td>
+</tr>
 
-          </div>
-          
-        </div>
-      
-        <div class='space-bottom0'>
-          <div>
-            <span class='code bold'>hub</span> <code class='quiet'>(any
-            = <code>null</code>)</code>
-	    <a href="https://pay2my.app/">pay2my.app hub</a>
+
+              
+                <tr>
+  <td class='break-word'><span class='code bold'>options.overhideIsTest</span> <code class='quiet'>bool</code>
+  </td>
+  <td class='break-word'><span>flag whether this is all working against testnets or mainnets/prod servers.
+</span></td>
+</tr>
+
+
+              
+                <tr>
+  <td class='break-word'><span class='code bold'>options.pay2myAppHub</span> <code class='quiet'><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a></code>
+  </td>
+  <td class='break-word'><span><a href="https://pay2my.app/">pay2my.app hub</a>
  to instrument with credentials coming out of the remoteStorage instance.
 If user connects with a 
-<em>Lucchetto extended</em>
+<a href="https://github.com/overhide/armadietto/tree/master/lucchetto">Lucchetto extended</a>
  
 <code>remoteStorage</code>
-, this hub will be instrumented.  Otherwise the hub will need to ask for credentials on in-app
-purchase use.
+, this hub will be instrumented.  Otherwise the hub will need to ask for credentials on in-app purchase use.
+</span></td>
+</tr>
 
-          </div>
+
+              
+                <tr>
+  <td class='break-word'><span class='code bold'>options.overhideApiKey</span> <code class='quiet'><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a></code>
+  </td>
+  <td class='break-word'><span>the API key to use, 
+<a href="https://token.overhide.io/register">get an API key</a>
+ for the right network, either  testnet or mainnet.  If the 
+<code>remoteStorage</code>
+ instance is provided and is a 
+<a href="https://github.com/overhide/armadietto/tree/master/lucchetto">Lucchetto extended</a>
+ RS server, you may leave this as 
+<code>null</code>
+: a 
+<em>Lucchetto</em>
+ extended RS server will provide a user-specific token to use with 
+<code>getSku(..)</code>
+ 
+<em>overhide</em>
+ connections. *
+</span></td>
+</tr>
+
+
+              
+            </tbody>
+          </table>
           
         </div>
       

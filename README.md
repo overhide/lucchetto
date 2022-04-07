@@ -22,7 +22,7 @@ In your `package.json`:
 ```
   "dependencies": {
     ..
-    "lucchetto": "^1.0.11",
+    "lucchetto": "^1.0.12",
     ..
   }
 ```
@@ -56,7 +56,9 @@ See the [How-To Tutorial Guide](https://github.com/overhide/pay2my.app/blob/mast
 Once available, in your source code call the back-end:
 
 ``` 
- var lucchetto = new Lucchetto(null, true, document.getElementById('hub-id-in-dom'));
+ var lucchetto = new Lucchetto({
+     overhideIsTest: true, 
+     pay2myAppHub: document.getElementById('hub-id-in-dom')});
  ...
  window.addEventListener('pay2myapp-appsell-sku-clicked', async (e) => { 
    ...
@@ -93,7 +95,10 @@ Once available, in your source code make *Lucchetto* work off of  [remotestorage
 
 ``` 
  var rsClient = new RemoteStorage();
- var lucchetto = new Lucchetto(rsClient, true, document.getElementById('hub-id-in-dom'));
+ var lucchetto = new Lucchetto({
+     remoteStorage: rsClient,
+     overhideIsTest: true, 
+     pay2myAppHub: document.getElementById('hub-id-in-dom')});
  ...
  window.addEventListener('pay2myapp-appsell-sku-clicked', async (e) => { 
    ...

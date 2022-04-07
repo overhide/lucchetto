@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset='utf-8'>
-  <title>lucchetto.js :: documentation 1.0.11 | Documentation</title>
+  <title>lucchetto.js :: documentation 1.0.13 | Documentation</title>
   <meta name='description' content='Client side JavaScript helper utilities for working with pay2my.app widgets leveraging Armadietto+Lucchetto RS server implementations such as https://overhide.io#baas.'>
   <meta name='viewport' content='width=device-width,initial-scale=1'>
   <link href='assets/bass.css' rel='stylesheet'>
@@ -15,7 +15,7 @@
       <div id='split-left' class='overflow-auto fs0 height-viewport-100'>
         <div class='py1 px2'>
           <h3 class='mb0 no-anchor'>lucchetto.js :: documentation</h3>
-          <div class='mb1'><code>1.0.11</code></div>
+          <div class='mb1'><code>1.0.13</code></div>
           <input
             placeholder='Filter'
             id='filter-input'
@@ -235,13 +235,15 @@ when the <code>Lucchetto</code> class is constructed with <code>isTest</code>:</
   </div>
   
 
-  <p>This calss provides utility functions to fetch in-app purchase data from the app-developer's RS (+Lucchetto) connection.  The
+  <p>This class provides utility functions to fetch in-app purchase data from the app-developer's RS (+Lucchetto) connection.  The
 in-app purchase data must first be <a href="https://overhide.github.io/armadietto/lucchetto/onboard.html#">onboarded</a> onto a <em>Lucchetto</em>
 extended RS server.</p>
 <p>A typical usage of this class with <a href="https://pay2my.app/">pay2my.app</a> widgets might look like:</p>
-<pre><code>  var lucchetto = new Lucchetto({
+<pre><code>
+  var lucchetto = new Lucchetto({
       overhideIsTest: true, 
-      pay2myAppHub: document.getElementById('hub-id-in-dom')});
+      pay2myAppHub: document.getElementById('hub-id-in-dom'),
+      overhideApiKey: '0x42..cb'});
   ...
   window.addEventListener('pay2myapp-appsell-sku-clicked', async (e) => { 
     ...
@@ -249,7 +251,11 @@ extended RS server.</p>
     console.log(`got SKU results`, { sku: e.detail.sku , result });
     ...
  }, false);
+
 </code></pre>
+<ul>
+<li>Above, we're passing in the <em>overhideApiKey</em> for our use — <a href="https://token.overhide.io/register">get an API key</a> for the right network, either  testnet or mainnet.  This is not a secret.</li>
+</ul>
 <hr>
 <p>⚠ In the context of being connected to your users' <em>remote-storage</em> instances through a non-null <code>remoteStorage</code> constructor (first) parameter:</p>
 <p>Reacts to <a href="https://remotestoragejs.readthedocs.io/">remotestorage.js</a> <code>onConnected</code> events to
@@ -261,11 +267,13 @@ end-user experience.</p>
 the DOM.  The enrichment provides server hints as per <code>LUCCHETTO_PROVIDERS</code> and <code>LUCCHETTO_PROVIDERS_4_TEST</code>.</p>
 <p>A typical usage of this class along with <a href="https://remotestoragejs.readthedocs.io/">remotestorage.js</a>
 and <a href="https://pay2my.app/">pay2my.app</a> widgets might look like:</p>
-<pre><code>  var rsClient = new RemoteStorage();
+<pre><code>
+  var rsClient = new RemoteStorage();
   var lucchetto = new Lucchetto({
       remoteStorage: rsClient,
       overhideIsTest: true, 
-      pay2myAppHub: document.getElementById('hub-id-in-dom')});
+      pay2myAppHub: document.getElementById('hub-id-in-dom'),
+      overhideApiKey: '0x42..cb'});
   ...
   window.addEventListener('pay2myapp-appsell-sku-clicked', async (e) => { 
     ...
@@ -273,7 +281,11 @@ and <a href="https://pay2my.app/">pay2my.app</a> widgets might look like:</p>
     console.log(`got SKU results`, { sku: e.detail.sku , result });
     ...
  }, false);
+
 </code></pre>
+<ul>
+<li>Above, we're also passing in the <em>overhideApiKey</em> for our use — <a href="https://token.overhide.io/register">get an API key</a> for the right network, either testnet or mainnet.  The <em>overhideApiKey</em> is optional since we'll usually leverage an <em>overhide</em> token from <em>remoteStorage</em>.  But if the <em>remoteStorage</em> connected to our application is not to a <em>Lucchetto</em> extended RS server, it won't have the <em>overhide</em> token, and we need to fail back to this default key.  This is not a secret.</li>
+</ul>
 <hr>
 
     <div class='pre p1 fill-light mt0'>new Lucchetto(options: <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a>)</div>

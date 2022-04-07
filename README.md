@@ -22,7 +22,7 @@ In your `package.json`:
 ```
   "dependencies": {
     ..
-    "lucchetto": "^1.0.12",
+    "lucchetto": "^1.0.13",
     ..
   }
 ```
@@ -58,7 +58,8 @@ Once available, in your source code call the back-end:
 ``` 
  var lucchetto = new Lucchetto({
      overhideIsTest: true, 
-     pay2myAppHub: document.getElementById('hub-id-in-dom')});
+     pay2myAppHub: document.getElementById('hub-id-in-dom'),
+     overhideApiKey: '0x42..cb'});
  ...
  window.addEventListener('pay2myapp-appsell-sku-clicked', async (e) => { 
    ...
@@ -70,7 +71,9 @@ Once available, in your source code call the back-end:
 
 
 
-> ⚠ Take not of the `null` *remoteStorage* (first) constructor parameter: our users are not connecting with the RS mechanism in our non-RS apps.
+> ⚠ Take not of the missing *remoteStorage* parameter: our users are not connecting with the RS mechanism in our non-RS apps.
+>
+> ⚠ Here we're passing in the *overhideApiKey* for our use &mdash; [get an API key](https://token.overhide.io/register) for the right network, either  testnet or mainnet.  This is not a secret.
 
 
 
@@ -98,7 +101,8 @@ Once available, in your source code make *Lucchetto* work off of  [remotestorage
  var lucchetto = new Lucchetto({
      remoteStorage: rsClient,
      overhideIsTest: true, 
-     pay2myAppHub: document.getElementById('hub-id-in-dom')});
+     pay2myAppHub: document.getElementById('hub-id-in-dom'),
+     overhideApiKey: '0x42..cb'}});
  ...
  window.addEventListener('pay2myapp-appsell-sku-clicked', async (e) => { 
    ...
@@ -107,6 +111,10 @@ Once available, in your source code make *Lucchetto* work off of  [remotestorage
    ...
  }, false);
 ```
+
+
+
+>  ⚠ Here we're also passing in the *overhideApiKey* for our use &mdash; [get an API key](https://token.overhide.io/register) for the right network, either testnet or mainnet.  The *overhideApiKey* is optional since we'll usually leverage an *overhide* token from *remoteStorage*.  But if the *remoteStorage* connected to our application is not to a *Lucchetto* extended RS server, it won't have the *overhide* token, and we need to fail back to this default key.  This is not a secret.
 
 
 

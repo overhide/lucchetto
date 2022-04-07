@@ -33,16 +33,18 @@ const LUCCHETTO_PROVIDERS = [
 ]
 
 /**
- * This calss provides utility functions to fetch in-app purchase data from the app-developer's RS (+Lucchetto) connection.  The 
+ * This class provides utility functions to fetch in-app purchase data from the app-developer's RS (+Lucchetto) connection.  The 
  * in-app purchase data must first be [onboarded](https://overhide.github.io/armadietto/lucchetto/onboard.html#) onto a *Lucchetto* 
  * extended RS server.
  * 
  * A typical usage of this class with [pay2my.app](https://pay2my.app/) widgets might look like:
  * 
  * ```
+ * 
  *   var lucchetto = new Lucchetto({
  *       overhideIsTest: true, 
- *       pay2myAppHub: document.getElementById('hub-id-in-dom')});
+ *       pay2myAppHub: document.getElementById('hub-id-in-dom'),
+ *       overhideApiKey: '0x42..cb'});
  *   ...
  *   window.addEventListener('pay2myapp-appsell-sku-clicked', async (e) => { 
  *     ...
@@ -50,7 +52,10 @@ const LUCCHETTO_PROVIDERS = [
  *     console.log(`got SKU results`, { sku: e.detail.sku , result });
  *     ...
  *  }, false);
+ * 
  * ```
+ * 
+ * - Above, we're passing in the *overhideApiKey* for our use &mdash; [get an API key](https://token.overhide.io/register) for the right network, either  testnet or mainnet.  This is not a secret.
  * 
  * ---
  * 
@@ -70,11 +75,13 @@ const LUCCHETTO_PROVIDERS = [
  * and [pay2my.app](https://pay2my.app/) widgets might look like:
  * 
  * ```
+ * 
  *   var rsClient = new RemoteStorage();
  *   var lucchetto = new Lucchetto({
  *       remoteStorage: rsClient,
  *       overhideIsTest: true, 
- *       pay2myAppHub: document.getElementById('hub-id-in-dom')});
+ *       pay2myAppHub: document.getElementById('hub-id-in-dom'),
+ *       overhideApiKey: '0x42..cb'});
  *   ...
  *   window.addEventListener('pay2myapp-appsell-sku-clicked', async (e) => { 
  *     ...
@@ -82,7 +89,10 @@ const LUCCHETTO_PROVIDERS = [
  *     console.log(`got SKU results`, { sku: e.detail.sku , result });
  *     ...
  *  }, false);
+ * 
  * ```
+ * 
+ * - Above, we're also passing in the *overhideApiKey* for our use &mdash; [get an API key](https://token.overhide.io/register) for the right network, either testnet or mainnet.  The *overhideApiKey* is optional since we'll usually leverage an *overhide* token from *remoteStorage*.  But if the *remoteStorage* connected to our application is not to a *Lucchetto* extended RS server, it won't have the *overhide* token, and we need to fail back to this default key.  This is not a secret.
  * 
  * ---
  * 

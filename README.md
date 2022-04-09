@@ -22,7 +22,7 @@ In your `package.json`:
 ```
   "dependencies": {
     ..
-    "lucchetto": "^1.0.14",
+    "lucchetto": "^1.0.15",
     ..
   }
 ```
@@ -190,11 +190,11 @@ The app has all the necessary instructions.
 
 
 
-#### Add IAP Buttons Against Above SKU Data
+#### Add [pay2my.app](https://www.npmjs.com/package/pay2my.app/v/latest) In-App Purchase Buttons Against Above SKU Data
 
 When your users make an IAP purchase you need to validate their payment &mdash; en perpetuity &mdash; and get the data backing your SKU (what you added in the previous section to your RS server).
 
-The IAP buttons use wire up all the necessary information:
+The [pay2my.app](https://www.npmjs.com/package/pay2my.app/v/latest) IAP buttons wire up all the necessary information:
 
 ```
 <pay2myapp-appsell 

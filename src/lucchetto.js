@@ -117,14 +117,20 @@ class Lucchetto {
 
     this.reinitConnectionPromise();
     this.reinitLucchettoPromise();
-    document.addEventListener('DOMContentLoaded', this.onDomLoad);
+
+    let readyStateCheckInterval = setInterval((() => {
+      if (document.readyState === "complete") {
+          clearInterval(readyStateCheckInterval);
+          this.init();
+        }
+    }).bind(this), 10);
   }
 
   /**
    * Regular DOM "loaded" event handler.
    * @ignore
    */
-  onDomLoad = () => {
+   init = () => {
     this.extendWidget();
     this.initHub();
     if (!this.remoteStorage) return;
